@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.samorodov.ru.interviewvk.MainActivity">
+
+    <FrameLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/white"
+        android:elevation="2dp">
+
+        <ImageView
+            android:padding="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:id="@+id/font_style_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_toolbar_font"
+            android:layout_gravity="start|center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/black"
+            android:text="@string/new_record"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:id="@+id/stickers_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp"
+            android:src="@drawable/ic_toolbar_sticker"/>
+    </FrameLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"></LinearLayout>
+
+</FrameLayout>
