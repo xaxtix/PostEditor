@@ -32,11 +32,20 @@ public class MainActivity extends AppCompatActivity {
 
         stickersButton.setOnClickListener(v -> {
             if(stickersPopup == null) {
-                stickersPopup = new StickersPopupView(MainActivity.this);
-                content.addView(stickersPopup);
+                initStickersPopup();
             }
 
             stickersPopup.toggle();
         });
+
+
+    }
+
+    private void initStickersPopup() {
+        stickersPopup = new StickersPopupView(MainActivity.this);
+        stickersPopup.setOnStickerSelectedListener(sticker -> {
+            editorView.addSticker(sticker);
+        });
+        content.addView(stickersPopup);
     }
 }

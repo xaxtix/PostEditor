@@ -8,9 +8,6 @@ import com.annimon.stream.Optional;
 import com.annimon.stream.function.Consumer;
 import com.transitionseverywhere.Transition;
 
-/**
- * Created by loskin on 08.12.2017.
- */
 public class AnimatorHelper<T> implements
         Animator.AnimatorListener,
         Animation.AnimationListener,

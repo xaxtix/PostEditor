@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -13,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.annimon.stream.function.Consumer;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.adapter.StickersAdapter;
 import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
@@ -34,6 +36,8 @@ public class StickersPopupView extends FrameLayout {
     Animator lastAnimator;
 
     StickersAdapter adapter;
+
+    Consumer<Uri> stickerListener;
 
     public StickersPopupView(@NonNull Context context) {
         super(context);
@@ -60,7 +64,10 @@ public class StickersPopupView extends FrameLayout {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
         adapter = new StickersAdapter(sticker -> {
-
+            if (stickerListener != null) {
+                toggle();
+                stickerListener.accept(sticker);
+            }
         });
 
         adapter.setStickers(StickerUtils.getStickersUriList());
@@ -114,5 +121,9 @@ public class StickersPopupView extends FrameLayout {
         }));
         set.start();
         lastAnimator = set;
+    }
+
+    public void setOnStickerSelectedListener(Consumer<Uri> stickerListener) {
+        this.stickerListener = stickerListener;
     }
 }

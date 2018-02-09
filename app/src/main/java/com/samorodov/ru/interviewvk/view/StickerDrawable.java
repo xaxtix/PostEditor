@@ -18,6 +18,9 @@ public class StickerDrawable {
     private final int height;
     private final int width;
 
+    float translationX;
+    float translationY;
+
     public StickerDrawable(Bitmap bitmap) {
         this.bitmap = bitmap;
 
@@ -26,6 +29,10 @@ public class StickerDrawable {
 
         transformMatrix = new Matrix();
         invertMatrix = new Matrix();
+
+        translationX = -width >> 1;
+        translationY = -height >> 1;
+        transformMatrix.setTranslate(translationX, translationY);
 
         paint = new Paint();
         paint.setFilterBitmap(true);
@@ -39,7 +46,7 @@ public class StickerDrawable {
     }
 
     public void translate(float x, float y) {
-        transformMatrix.setTranslate(x, y);
+        transformMatrix.setTranslate(translationX = x, translationY = y);
     }
 
     public void rotate(float a) {
@@ -55,7 +62,16 @@ public class StickerDrawable {
         point[0] = x;
         point[1] = y;
         invertMatrix.mapPoints(point);
-        if (point[0] < width && point[1] < height) return true;
+        if (point[0] > 0 && point[0] < width &&
+                point[1] > 0 && point[1] < height) return true;
         return false;
+    }
+
+    public float getTranslationX() {
+        return translationX;
+    }
+
+    public float getTranslationY() {
+        return translationY;
     }
 }
