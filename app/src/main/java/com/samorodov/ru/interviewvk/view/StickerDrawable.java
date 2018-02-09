@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.views;
+package com.samorodov.ru.interviewvk.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

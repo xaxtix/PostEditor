@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.views;
+package com.samorodov.ru.interviewvk.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -56,7 +56,7 @@ public class PhotoEditorView extends View {
             public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
 
             }
-        })
+        });
         return super.onTouchEvent(event);
 
     }

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.samorodov.ru.interviewvk.MainActivity">
+    tools:context="com.samorodov.ru.interviewvk.MainActivity"
+    android:id="@+id/content">
 
     <FrameLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@android:color/white"
-        android:elevation="2dp">
+        android:background="@android:color/white">
 
         <ImageView
             android:padding="12dp"
@@ -43,18 +42,14 @@
             android:src="@drawable/ic_toolbar_sticker"/>
     </FrameLayout>
 
-    <com.samorodov.ru.interviewvk.views.PhotoEditorView
+    <com.samorodov.ru.interviewvk.view.PhotoEditorView
+        android:id="@+id/editor_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
 
     <LinearLayout
         android:background="@android:color/white"
-        android:elevation="2dp"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="56dp"></LinearLayout>
