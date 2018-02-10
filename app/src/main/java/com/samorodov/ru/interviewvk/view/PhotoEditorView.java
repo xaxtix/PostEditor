@@ -7,14 +7,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.samorodov.ru.interviewvk.utilits.MultitouchGestureDetector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +24,9 @@ import java.util.List;
 
 public class PhotoEditorView extends View {
 
-    private List<StickerDrawable> stickers = new ArrayList<>();
+    private final List<StickerDrawable> stickers = new ArrayList<>();
 
-    MultitouchGestureDetector gestureDetector;
-
-    @Nullable
-    private StickerDrawable captureSticker;
-
-    float firstX;
-    float firstY;
+    StickersGestureDetector gestureDetector;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -51,8 +43,8 @@ public class PhotoEditorView extends View {
         init(attrs);
     }
 
-    private void init(AttributeSet attrs) {
-        gestureDetector = new MultitouchGestureDetector();
+    private void init(AttributeSet attrs){
+        gestureDetector = new StickersGestureDetector(this,stickers);
     }
 
     @Override
@@ -65,42 +57,7 @@ public class PhotoEditorView extends View {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-
-
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                captureSticker = findCapturedSticker(x, y);
-                if (captureSticker != null) {
-                    firstX = captureSticker.translationX - x;
-                    firstY = captureSticker.translationY - y;
-                    return true;
-                }
-                return false;
-            case MotionEvent.ACTION_MOVE:
-                if (captureSticker != null) {
-                    captureSticker.translate(firstX + x, firstY + y);
-                    invalidate(); 
-                }
-
-                return true;
-            default:
-                captureSticker = null;
-                return false;
-
-        }
-    }
-
-    @Nullable
-    public StickerDrawable findCapturedSticker(float x, float y) {
-        int n = stickers.size();
-        for (int i = 0; i < n; i++) {
-            if (stickers.get(i).capture(x, y)) {
-                return stickers.get(i);
-            }
-        }
-        return null;
+        return gestureDetector.onTouch(event);
     }
 
 
@@ -113,10 +70,12 @@ public class PhotoEditorView extends View {
                     public void onResourceReady(@NonNull Bitmap resource,
                                                 @Nullable Transition<? super Bitmap> transition) {
                         StickerDrawable stickerDrawable = new StickerDrawable(resource);
+
                         stickerDrawable.translate(
                                 stickerDrawable.translationX + (getMeasuredWidth() >> 1),
                                 stickerDrawable.translationY + (getMeasuredHeight() >> 1)
                         );
+
                         stickers.add(stickerDrawable);
                         invalidate();
                     }

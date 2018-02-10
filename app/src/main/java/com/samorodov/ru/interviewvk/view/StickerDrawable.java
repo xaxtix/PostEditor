@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.support.annotation.NonNull;
 
 public class StickerDrawable {
@@ -20,6 +21,9 @@ public class StickerDrawable {
 
     float translationX;
     float translationY;
+
+    float scale = 1f;
+    float rotate = 0;
 
     public StickerDrawable(Bitmap bitmap) {
         this.bitmap = bitmap;
@@ -40,21 +44,30 @@ public class StickerDrawable {
 
     public void draw(@NonNull Canvas canvas) {
         canvas.save();
+        updateMatrix();
         canvas.setMatrix(transformMatrix);
         canvas.drawBitmap(bitmap, 0, 0, paint);
         canvas.restore();
     }
 
+    private void updateMatrix() {
+        transformMatrix.reset();
+        transformMatrix.postRotate(rotate, width >> 1, height >> 1);
+        transformMatrix.postScale(scale, scale, width >> 1, height >> 1);
+        transformMatrix.postTranslate(translationX, translationY);
+    }
+
     public void translate(float x, float y) {
-        transformMatrix.setTranslate(translationX = x, translationY = y);
+        translationX = x;
+        translationY = y;
     }
 
     public void rotate(float a) {
-        transformMatrix.preRotate(a, width >> 1, height >> 1);
+        rotate = a;
     }
 
-    public void scale(int s) {
-        transformMatrix.preScale(s, s, width >> 1, height >> 1);
+    public void scale(float s) {
+        scale = s;
     }
 
     public boolean capture(float x, float y) {
@@ -63,7 +76,10 @@ public class StickerDrawable {
         point[1] = y;
         invertMatrix.mapPoints(point);
         if (point[0] > 0 && point[0] < width &&
-                point[1] > 0 && point[1] < height) return true;
+                point[1] > 0 && point[1] < height) {
+            //return false if pixel is transparent
+            return (bitmap.getPixel((int) point[0], (int) point[1]) >> 24 & 0xff) != 0;
+        }
         return false;
     }
 
