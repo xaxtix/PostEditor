@@ -3,6 +3,8 @@ package com.samorodov.ru.interviewvk.view;
 import android.content.Context;
 import android.graphics.PointF;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MotionEventCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -14,12 +16,9 @@ import java.util.List;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-/**
- * Created by xaxtix on 10.02.2018.
- * ♪♫•*¨*•.¸¸❤¸¸.•*¨*•♫♪ﾟ+｡☆*゜+。.。:.*.ﾟ ﾟ¨ﾟﾟ･*:..｡o○☆ﾟ+｡
- */
 
 public class StickersGestureDetector {
 
@@ -33,6 +32,10 @@ public class StickersGestureDetector {
     @Nullable
     private StickerDrawable capturedSticker;
 
+    private float scale;
+    private float translationX;
+    private float translationY;
+    private float rotation;
 
     public StickersGestureDetector(View view, List<StickerDrawable> stickers) {
         this.view = view;
@@ -43,19 +46,12 @@ public class StickersGestureDetector {
         scaleDetector = new ScaleGestureDetector(context, new ScaleGestureDetector
                 .SimpleOnScaleGestureListener() {
 
-            float scale;
-
-            @Override
-            public boolean onScaleBegin(ScaleGestureDetector detector) {
-                if (capturedSticker == null) return false;
-                scale = capturedSticker.scale;
-                return true;
-            }
-
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
                 if (capturedSticker == null) return false;
                 scale *= detector.getScaleFactor();
+                scale = Math.max(0.3f, Math.min(scale, 5.0f));
+
                 capturedSticker.scale(scale);
                 return true;
             }
@@ -63,15 +59,6 @@ public class StickersGestureDetector {
 
         rotateDetector = new RotateGestureDetector(context, new RotateGestureDetector
                 .SimpleOnRotateGestureListener() {
-
-            float rotation;
-
-            @Override
-            public boolean onRotateBegin(RotateGestureDetector detector) {
-                if (capturedSticker == null) return false;
-                rotation = capturedSticker.rotate;
-                return true;
-            }
 
             @Override
             public boolean onRotate(RotateGestureDetector detector) {
@@ -84,17 +71,6 @@ public class StickersGestureDetector {
 
         moveGestureDetector = new MoveGestureDetector(context, new MoveGestureDetector
                 .SimpleOnMoveGestureListener() {
-
-            float translationX;
-            float translationY;
-
-            @Override
-            public boolean onMoveBegin(MoveGestureDetector detector) {
-                if (capturedSticker == null) return false;
-                translationY = capturedSticker.translationY;
-                translationX = capturedSticker.translationX;
-                return true;
-            }
 
             @Override
             public boolean onMove(MoveGestureDetector detector) {
@@ -113,22 +89,33 @@ public class StickersGestureDetector {
         float x = event.getX();
         float y = event.getY();
 
+        int action = event.getActionMasked();
 
         scaleDetector.onTouchEvent(event);
         rotateDetector.onTouchEvent(event);
         moveGestureDetector.onTouchEvent(event);
 
-        switch (event.getAction()) {
+
+
+        switch (action) {
+            case ACTION_POINTER_DOWN:
             case ACTION_DOWN:
                 if (capturedSticker == null) {
-                    if (event.getPointerCount() == 1) {
-                        capturedSticker = findCapturedSticker(x, y);
-                    } else {
+                    if (event.getPointerCount() > 1) {
+                        x = (event.getX(0) + event.getX(1)) / 2;
+                        y = (event.getY(0) + event.getY(1)) / 2;
 
                     }
+                    capturedSticker = findCapturedSticker(x, y);
 
+                    if(capturedSticker != null){
+                        translationX = capturedSticker.translationX;
+                        translationY = capturedSticker.translationY;
+                        rotation = capturedSticker.rotate;
+                        scale = capturedSticker.scale;
+                    }
                 }
-                return capturedSticker != null;
+                return capturedSticker != null || event.getPointerCount() == 1;
             case ACTION_MOVE:
                 if (capturedSticker == null) return false;
                 view.invalidate();
@@ -137,9 +124,10 @@ public class StickersGestureDetector {
                 if (event.getPointerCount() == 1)
                     capturedSticker = null;
                 return true;
+            default:
+                return capturedSticker != null;
         }
 
-        return false;
     }
 
     @Nullable
