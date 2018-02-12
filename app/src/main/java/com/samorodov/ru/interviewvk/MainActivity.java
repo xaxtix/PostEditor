@@ -3,11 +3,12 @@ package com.samorodov.ru.interviewvk;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.samorodov.ru.interviewvk.view.PhotoEditorView;
-import com.samorodov.ru.interviewvk.view.StickersPopupView;
+import com.samorodov.ru.interviewvk.view.stickers.StickersPopupView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.stickers_button) ImageView stickersButton;
     @BindView(R.id.toolbar) FrameLayout toolbar;
     @BindView(R.id.editor_view) PhotoEditorView editorView;
-    @BindView(R.id.content) FrameLayout content;
+    @BindView(R.id.content) ViewGroup content;
 
     @Nullable
     StickersPopupView stickersPopup;

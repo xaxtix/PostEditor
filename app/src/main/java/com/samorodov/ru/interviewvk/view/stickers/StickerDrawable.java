@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.view;
+package com.samorodov.ru.interviewvk.view.stickers;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,27 +25,27 @@ public class StickerDrawable {
     float scale = 1f;
     float rotate = 0;
 
-    public StickerDrawable(Bitmap bitmap) {
+    public StickerDrawable(Bitmap bitmap,Paint paint,Matrix tmpMatrix) {
         this.bitmap = bitmap;
 
         width = bitmap.getWidth();
         height = bitmap.getHeight();
 
         transformMatrix = new Matrix();
-        invertMatrix = new Matrix();
+        invertMatrix = tmpMatrix;
 
         translationX = -width >> 1;
         translationY = -height >> 1;
         transformMatrix.setTranslate(translationX, translationY);
 
-        paint = new Paint();
-        paint.setFilterBitmap(true);
+        this.paint = paint;
+
     }
 
     public void draw(@NonNull Canvas canvas) {
         canvas.save();
         updateMatrix();
-        canvas.setMatrix(transformMatrix);
+        canvas.concat(transformMatrix);
         canvas.drawBitmap(bitmap, 0, 0, paint);
         canvas.restore();
     }

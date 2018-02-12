@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.view;
+package com.samorodov.ru.interviewvk.view.stickers;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

@@ -7,51 +7,62 @@
     android:layout_height="match_parent"
     tools:context="com.samorodov.ru.interviewvk.MainActivity">
 
-    <com.samorodov.ru.interviewvk.view.PhotoEditorView
-        android:id="@+id/editor_view"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="49dp"
-        android:background="@android:color/white">
-
-        <ImageView
-            android:id="@+id/font_style_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="start|center_vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="12dp"
-            android:src="@drawable/ic_toolbar_font"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/new_record"
-            android:textColor="@android:color/black"/>
-
-        <ImageView
-            android:id="@+id/stickers_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="end|center_vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="12dp"
-            android:src="@drawable/ic_toolbar_sticker"/>
-
-        <View
+        <FrameLayout
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider"
-            android:layout_gravity="bottom"/>
-    </FrameLayout>
+            android:layout_height="49dp"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/font_style_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="start|center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="12dp"
+                android:src="@drawable/ic_toolbar_font"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/new_record"
+                android:textColor="@android:color/black"/>
+
+            <ImageView
+                android:id="@+id/stickers_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end|center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="12dp"
+                android:src="@drawable/ic_toolbar_sticker"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_gravity="bottom"/>
+        </FrameLayout>
+
+        <com.samorodov.ru.interviewvk.view.PhotoEditorView
+            android:id="@+id/editor_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+    </LinearLayout>
+
+
+
 
 
     <LinearLayout

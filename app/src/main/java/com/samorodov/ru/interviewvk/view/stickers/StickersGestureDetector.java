@@ -1,16 +1,15 @@
-package com.samorodov.ru.interviewvk.view;
+package com.samorodov.ru.interviewvk.view.stickers;
 
 import android.content.Context;
 import android.graphics.PointF;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MotionEventCompat;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.almeros.android.multitouch.MoveGestureDetector;
 import com.almeros.android.multitouch.RotateGestureDetector;
+import com.annimon.stream.function.Consumer;
 
 import java.util.List;
 
@@ -36,6 +35,12 @@ public class StickersGestureDetector {
     private float translationX;
     private float translationY;
     private float rotation;
+
+    @Nullable
+    Consumer<StickerDrawable> onDrawaleCapturedListener;
+
+    @Nullable
+    Consumer<StickerDrawable> onDrawaleReleasedListener;
 
     public StickersGestureDetector(View view, List<StickerDrawable> stickers) {
         this.view = view;
@@ -96,7 +101,6 @@ public class StickersGestureDetector {
         moveGestureDetector.onTouchEvent(event);
 
 
-
         switch (action) {
             case ACTION_POINTER_DOWN:
             case ACTION_DOWN:
@@ -108,11 +112,14 @@ public class StickersGestureDetector {
                     }
                     capturedSticker = findCapturedSticker(x, y);
 
-                    if(capturedSticker != null){
+                    if (capturedSticker != null) {
                         translationX = capturedSticker.translationX;
                         translationY = capturedSticker.translationY;
                         rotation = capturedSticker.rotate;
                         scale = capturedSticker.scale;
+                        if (onDrawaleCapturedListener != null) {
+                            onDrawaleCapturedListener.accept(capturedSticker);
+                        }
                     }
                 }
                 return capturedSticker != null || event.getPointerCount() == 1;
@@ -121,8 +128,12 @@ public class StickersGestureDetector {
                 view.invalidate();
                 return true;
             case ACTION_UP:
-                if (event.getPointerCount() == 1)
+                if (event.getPointerCount() == 1 && capturedSticker != null) {
+                    if (onDrawaleReleasedListener != null) {
+                        onDrawaleReleasedListener.accept(capturedSticker);
+                    }
                     capturedSticker = null;
+                }
                 return true;
             default:
                 return capturedSticker != null;
@@ -139,5 +150,13 @@ public class StickersGestureDetector {
             }
         }
         return null;
+    }
+
+    public void setOnDrawaleCapturedListener(@Nullable Consumer<StickerDrawable> onDrawaleCapturedListener) {
+        this.onDrawaleCapturedListener = onDrawaleCapturedListener;
+    }
+
+    public void setOnDrawaleReleasedListener(@Nullable Consumer<StickerDrawable> onDrawaleReleasedListener) {
+        this.onDrawaleReleasedListener = onDrawaleReleasedListener;
     }
 }
