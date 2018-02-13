@@ -3,10 +3,14 @@ package com.samorodov.ru.interviewvk;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
+import com.samorodov.ru.interviewvk.utilits.RecyclerViewUtils;
 import com.samorodov.ru.interviewvk.view.PhotoEditorView;
 import com.samorodov.ru.interviewvk.view.stickers.StickersPopupView;
 
@@ -19,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.stickers_button) ImageView stickersButton;
     @BindView(R.id.toolbar) FrameLayout toolbar;
     @BindView(R.id.editor_view) PhotoEditorView editorView;
-    @BindView(R.id.content) ViewGroup content;
+    @BindView(android.R.id.content) ViewGroup content;
+    @BindView(R.id.image_picker) RecyclerView imagePicker;
 
     @Nullable
     StickersPopupView stickersPopup;
@@ -32,12 +37,21 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         stickersButton.setOnClickListener(v -> {
-            if(stickersPopup == null) {
+            if (stickersPopup == null) {
                 initStickersPopup();
             }
 
             stickersPopup.toggle();
         });
+
+        imagePicker.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false
+        ));
+        imagePicker.addItemDecoration(new RecyclerViewUtils.ItemHorizontalOffsetDecoration(
+                AndroidUtilites.dp(this,4)
+        ));
+
+        imagePicker.setAdapter(new ImagePikcerAdapter());
 
 
     }
@@ -49,4 +63,6 @@ public class MainActivity extends AppCompatActivity {
         });
         content.addView(stickersPopup);
     }
+
+
 }

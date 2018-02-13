@@ -1,5 +1,6 @@
 package com.samorodov.ru.interviewvk.utilits;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -28,4 +29,10 @@ public class AndroidUtilites {
         });
     }
 
+    public static int dp(Context context, float value) {
+        if (value == 0) {
+            return 0;
+        }
+        return (int) Math.ceil(context.getResources().getDisplayMetrics().density * value);
+    }
 }

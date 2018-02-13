@@ -2,4 +2,5 @@
     <string name="app_name">InterviewVK</string>
     <string name="new_record">Новая запись</string>
     <string name="stickers">Стикеры</string>
+    <string name="save">Сохранить</string>
 </resources>
