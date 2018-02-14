@@ -15,7 +15,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.di.component.DaggerPhotoEditorComponent;
 import com.samorodov.ru.interviewvk.presentation.presenter.PhotoEditorPresenter;
-import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.ImagePikcerAdapter;
+import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.ImagePickerAdapter;
 import com.samorodov.ru.interviewvk.presentation.ui.view.PhotoEditorView;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersPopupView;
 import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
@@ -41,6 +41,8 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
 
     @InjectPresenter
     PhotoEditorPresenter presenter;
+
+    ImagePickerAdapter imagePickerAdapter;
 
     @ProvidePresenter
     public PhotoEditorPresenter providePresenter() {
@@ -72,9 +74,10 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 AndroidUtilites.dp(this, 4)
         ));
 
-        imagePicker.setAdapter(new ImagePikcerAdapter(uri -> {
+        imagePicker.setAdapter(imagePickerAdapter = new ImagePickerAdapter());
+        imagePickerAdapter.setOnImageSelectedListener(uri -> {
             editorView.setBackgroundImage(uri);
-        }));
+        });
 
 
     }
@@ -93,6 +96,14 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     public void setStickers(List<Uri> stickers) {
         if (stickersPopup != null)
             stickersPopup.setStickers(stickers);
+    }
 
+    @Override
+    public void onBackPressed() {
+        if (stickersPopup != null && stickersPopup.isExpanded()) {
+            stickersPopup.toggle();
+            return;
+        }
+        super.onBackPressed();
     }
 }

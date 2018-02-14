@@ -130,4 +130,8 @@ public class StickersPopupView extends FrameLayout {
     public void setStickers(List<Uri> stickers){
         adapter.setStickers(stickers);
     }
+
+    public boolean isExpanded() {
+        return expand;
+    }
 }

@@ -7,11 +7,13 @@ import com.samorodov.ru.interviewvk.presentation.view.PhotoEditorView;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
+
 @InjectViewState
 public class PhotoEditorPresenter extends MvpPresenter<PhotoEditorView> {
 
     @Inject
-    PhotoEditorInteractor interactor;
+    Lazy<PhotoEditorInteractor> interactor;
 
     @Override
     protected void onFirstViewAttach() {
@@ -19,7 +21,7 @@ public class PhotoEditorPresenter extends MvpPresenter<PhotoEditorView> {
     }
 
     public void loadStickers() {
-        interactor.loadStickers()
+        interactor.get().loadStickers()
                 .subscribe(
                         stickers -> getViewState().setStickers(stickers),
                         Throwable::printStackTrace

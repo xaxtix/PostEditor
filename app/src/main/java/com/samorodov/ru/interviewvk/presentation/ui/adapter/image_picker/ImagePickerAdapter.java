@@ -14,13 +14,11 @@ import com.samorodov.ru.interviewvk.presentation.ui.view.SelectableImageView;
  * ♪♫•*¨*•.¸¸❤¸¸.•*¨*•♫♪ﾟ+｡☆*゜+。.。:.*.ﾟ ﾟ¨ﾟﾟ･*:..｡o○☆ﾟ+｡
  */
 
-public class ImagePikcerAdapter extends RecyclerView.Adapter<ImagePikcerAdapter.ViewHolder> {
+public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.ViewHolder> {
 
 
     @Nullable
     Consumer<Uri> onImageSelectedListener;
-
-    
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,12 +43,18 @@ public class ImagePikcerAdapter extends RecyclerView.Adapter<ImagePikcerAdapter.
             super(itemView);
             this.imageView = itemView;
             itemView.setOnClickListener(v -> {
-                onImageSelectedListener.accept(Uri.parse("file:///android_asset/backgrounds/bg_stars_center.png"));
+                if (onImageSelectedListener != null)
+                    onImageSelectedListener.accept(Uri.parse("file:///android_asset/backgrounds/bg_stars_center.png"));
+
             });
 
             Glide.with(itemView)
                     .load(Uri.parse("file:///android_asset/backgrounds/bg_stars_center.png"))
                     .into(itemView);
         }
+    }
+
+    public void setOnImageSelectedListener(@Nullable Consumer<Uri> onImageSelectedListener) {
+        this.onImageSelectedListener = onImageSelectedListener;
     }
 }

@@ -139,9 +139,7 @@ public class PhotoEditorView extends View {
 
     }
 
-    public void setBackgroundImage(Uri backgroundImage) {
-        if (background != null && !background.isRecycled())
-            background.recycle();
+    public void setBackgroundImage(Object backgroundImage) {
         background = null;
 
         Glide.with(this)

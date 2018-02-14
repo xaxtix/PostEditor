@@ -62,4 +62,8 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
         super.onDraw(canvas);
         canvas.restore();
     }
+
+    public void setSelected(boolean selected){
+
+    }
 }
