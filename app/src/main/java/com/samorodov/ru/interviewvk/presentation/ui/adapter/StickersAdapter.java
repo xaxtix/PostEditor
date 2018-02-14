@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.adapter;
+package com.samorodov.ru.interviewvk.presentation.ui.adapter;
 
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -10,7 +10,7 @@ import com.annimon.stream.function.Consumer;
 import com.bumptech.glide.Glide;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
-import com.samorodov.ru.interviewvk.view.SquareImageView;
+import com.samorodov.ru.interviewvk.presentation.ui.view.SquareImageView;
 
 import java.util.ArrayList;
 import java.util.Collection;

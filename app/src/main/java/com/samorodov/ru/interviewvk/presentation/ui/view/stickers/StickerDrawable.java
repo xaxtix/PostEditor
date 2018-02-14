@@ -1,10 +1,9 @@
-package com.samorodov.ru.interviewvk.view.stickers;
+package com.samorodov.ru.interviewvk.presentation.ui.view.stickers;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.support.annotation.NonNull;
 
 public class StickerDrawable {

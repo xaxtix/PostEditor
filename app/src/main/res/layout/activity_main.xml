@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.samorodov.ru.interviewvk.MainActivity">
+    tools:context="com.samorodov.ru.interviewvk.presentation.ui.PhotoEditorActivity">
 
 
     <FrameLayout
@@ -50,7 +50,7 @@
             android:background="@color/divider"/>
     </FrameLayout>
 
-    <com.samorodov.ru.interviewvk.view.PhotoEditorView
+    <com.samorodov.ru.interviewvk.presentation.ui.view.PhotoEditorView
         android:id="@+id/editor_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

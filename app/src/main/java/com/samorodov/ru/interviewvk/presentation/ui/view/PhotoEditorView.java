@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.view;
+package com.samorodov.ru.interviewvk.presentation.ui.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,14 +13,12 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.samorodov.ru.interviewvk.view.stickers.StickerDrawable;
-import com.samorodov.ru.interviewvk.view.stickers.StickersGestureDetector;
+import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickerDrawable;
+import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersGestureDetector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +40,9 @@ public class PhotoEditorView extends View {
     Bitmap stickersLayer;
 
     Canvas stickersLayerCanvas;
+
+    @Nullable
+    Bitmap background;
 
     @Nullable
     StickerDrawable capturedSticker;
@@ -85,14 +86,19 @@ public class PhotoEditorView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        stickersLayer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        stickersLayerCanvas = new Canvas(stickersLayer);
-        drawStickers();
+        if (stickersLayer == null || stickersLayer.getWidth() != getMeasuredWidth() ||
+                stickersLayer.getHeight() != getMeasuredHeight()) {
+            stickersLayer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+            stickersLayerCanvas = new Canvas(stickersLayer);
+            drawStickers();
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (background != null)
+            canvas.drawBitmap(background, 0, 0, emptyPaint);
         canvas.drawBitmap(stickersLayer, 0, 0, emptyPaint);
         if (capturedSticker != null) capturedSticker.draw(canvas);
     }
@@ -131,5 +137,23 @@ public class PhotoEditorView extends View {
             stickers.get(i).draw(stickersLayerCanvas);
         }
 
+    }
+
+    public void setBackgroundImage(Uri backgroundImage) {
+        if (background != null && !background.isRecycled())
+            background.recycle();
+        background = null;
+
+        Glide.with(this)
+                .asBitmap()
+                .load(backgroundImage)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource,
+                                                @Nullable Transition<? super Bitmap> transition) {
+                        background = resource;
+                        invalidate();
+                    }
+                });
     }
 }

@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.view.stickers;
+package com.samorodov.ru.interviewvk.presentation.ui.view.stickers;
 
 import android.content.Context;
 import android.graphics.PointF;

@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.view;
+package com.samorodov.ru.interviewvk.presentation.ui.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -52,7 +52,7 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
 
         path.reset();
         rect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
-        path.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW);
+        path.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CCW);
     }
 
     @Override

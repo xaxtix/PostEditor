@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.view.stickers;
+package com.samorodov.ru.interviewvk.presentation.ui.view.stickers;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -16,10 +16,11 @@ import android.widget.FrameLayout;
 
 import com.annimon.stream.function.Consumer;
 import com.samorodov.ru.interviewvk.R;
-import com.samorodov.ru.interviewvk.adapter.StickersAdapter;
+import com.samorodov.ru.interviewvk.presentation.ui.adapter.StickersAdapter;
 import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
 import com.samorodov.ru.interviewvk.utilits.AnimatorHelper;
-import com.samorodov.ru.interviewvk.utilits.StickerUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,7 +71,6 @@ public class StickersPopupView extends FrameLayout {
             }
         });
 
-        adapter.setStickers(StickerUtils.getStickersUriList());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -125,5 +125,9 @@ public class StickersPopupView extends FrameLayout {
 
     public void setOnStickerSelectedListener(Consumer<Uri> stickerListener) {
         this.stickerListener = stickerListener;
+    }
+
+    public void setStickers(List<Uri> stickers){
+        adapter.setStickers(stickers);
     }
 }
