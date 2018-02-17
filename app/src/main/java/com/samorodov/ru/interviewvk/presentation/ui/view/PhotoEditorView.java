@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.samorodov.ru.interviewvk.R;
-import com.samorodov.ru.interviewvk.presentation.ui.TextBackground;
+import com.samorodov.ru.interviewvk.presentation.ui.view.drawables.TextBackground;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickerDrawable;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersGestureDetector;
 

@@ -1,4 +1,4 @@
-package com.samorodov.ru.interviewvk.presentation.ui;
+package com.samorodov.ru.interviewvk.presentation.ui.view.drawables;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -35,12 +35,12 @@ public abstract class TextBackground extends Drawable {
         return true;
     }
 
-    public abstract int getColor();
+    public abstract int getColor(Context context);
 
 
     public TextBackground(Context context) {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(getColor());
+        paint.setColor(getColor(context));
         paint.setAlpha(50);
 
         porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
