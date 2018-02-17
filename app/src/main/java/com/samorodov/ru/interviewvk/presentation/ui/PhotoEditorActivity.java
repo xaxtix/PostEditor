@@ -3,6 +3,7 @@ package com.samorodov.ru.interviewvk.presentation.ui;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.Size;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
@@ -17,8 +18,9 @@ import com.samorodov.ru.interviewvk.di.component.DaggerPhotoEditorComponent;
 import com.samorodov.ru.interviewvk.presentation.presenter.PhotoEditorPresenter;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.ImagePickerAdapter;
 import com.samorodov.ru.interviewvk.presentation.ui.view.PhotoEditorView;
+import com.samorodov.ru.interviewvk.presentation.ui.view.SizeNotifierLinearLayout;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersPopupView;
-import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
+import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 import com.samorodov.ru.interviewvk.utilits.RecyclerViewUtils;
 
 import java.util.List;
@@ -34,6 +36,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     @BindView(R.id.toolbar) FrameLayout toolbar;
     @BindView(R.id.editor_view) PhotoEditorView editorView;
     @BindView(android.R.id.content) ViewGroup content;
+    @BindView(R.id.content) SizeNotifierLinearLayout sizeNotifier;
     @BindView(R.id.image_picker) RecyclerView imagePicker;
 
     @Nullable
@@ -71,7 +74,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 this, LinearLayoutManager.HORIZONTAL, false
         ));
         imagePicker.addItemDecoration(new RecyclerViewUtils.ItemHorizontalOffsetDecoration(
-                AndroidUtilites.dp(this, 4)
+                AndroidUtilities.dp(this, 4)
         ));
 
         imagePicker.setAdapter(imagePickerAdapter = new ImagePickerAdapter());
@@ -79,6 +82,9 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
             editorView.setBackgroundImage(uri);
         });
 
+        sizeNotifier.setKeyboardSizeListenerListener(keyboardHeight -> {
+            editorView.setKeyboardHeight(keyboardHeight);
+        });
 
     }
 

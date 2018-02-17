@@ -7,16 +7,22 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.samorodov.ru.interviewvk.R;
+import com.samorodov.ru.interviewvk.presentation.ui.TextBackground;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickerDrawable;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersGestureDetector;
 
@@ -28,7 +34,7 @@ import java.util.List;
  * ♪♫•*¨*•.¸¸❤¸¸.•*¨*•♫♪ﾟ+｡☆*゜+。.。:.*.ﾟ ﾟ¨ﾟﾟ･*:..｡o○☆ﾟ+｡
  */
 
-public class PhotoEditorView extends View {
+public class PhotoEditorView extends FrameLayout {
 
     private final List<StickerDrawable> stickers = new ArrayList<>();
 
@@ -47,6 +53,10 @@ public class PhotoEditorView extends View {
     @Nullable
     StickerDrawable capturedSticker;
 
+    int yOffset = 0;
+
+    private int keyboardHeight;
+
     public PhotoEditorView(Context context) {
         super(context);
         init(null);
@@ -63,6 +73,7 @@ public class PhotoEditorView extends View {
     }
 
     private void init(AttributeSet attrs) {
+        setWillNotDraw(false);
         gestureDetector = new StickersGestureDetector(this, stickers);
         gestureDetector.setOnDrawaleCapturedListener(drawable -> {
             stickers.remove(drawable);
@@ -81,6 +92,22 @@ public class PhotoEditorView extends View {
         emptyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         emptyPaint.setFilterBitmap(true);
 
+        EditText editText = new EditText(getContext());
+        editText.setBackground(null);
+        editText.setTextSize(24);
+        editText.setHint(R.string.what_new);
+        editText.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        editText.setGravity(Gravity.CENTER);
+        editText.setBackground(new TextBackground(getContext()));
+        editText.setLayerType(LAYER_TYPE_SOFTWARE,null);
+
+
+
+        addView(editText);
+        LayoutParams lp = (LayoutParams) editText.getLayoutParams();
+        lp.gravity = Gravity.CENTER;
+        lp.height = LayoutParams.WRAP_CONTENT;
+        lp.width = LayoutParams.WRAP_CONTENT;
     }
 
     @Override
@@ -96,11 +123,11 @@ public class PhotoEditorView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         if (background != null)
             canvas.drawBitmap(background, 0, 0, emptyPaint);
         canvas.drawBitmap(stickersLayer, 0, 0, emptyPaint);
-        if (capturedSticker != null) capturedSticker.draw(canvas);
+        if (capturedSticker != null) capturedSticker.draw(canvas, yOffset);
+        super.onDraw(canvas);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -120,7 +147,7 @@ public class PhotoEditorView extends View {
 
                         stickerDrawable.translate(
                                 stickerDrawable.getTranslationX() + (getMeasuredWidth() >> 1),
-                                stickerDrawable.getTranslationY() + (getMeasuredHeight() >> 1)
+                                stickerDrawable.getTranslationY() + (getMeasuredHeight() >> 1) - yOffset
                         );
 
                         stickers.add(stickerDrawable);
@@ -134,12 +161,12 @@ public class PhotoEditorView extends View {
         stickersLayerCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         int n = stickers.size();
         for (int i = 0; i < n; i++) {
-            stickers.get(i).draw(stickersLayerCanvas);
+            stickers.get(i).draw(stickersLayerCanvas, yOffset);
         }
 
     }
 
-    public void setBackgroundImage(Object backgroundImage) {
+    public void setBackgroundImage(Uri backgroundImage) {
         background = null;
 
         Glide.with(this)
@@ -153,5 +180,13 @@ public class PhotoEditorView extends View {
                         invalidate();
                     }
                 });
+    }
+
+    public void setKeyboardHeight(int keyboardHeight) {
+        this.keyboardHeight = keyboardHeight;
+        yOffset = -keyboardHeight >> 1;
+        drawStickers();
+        invalidate();
+        Log.d("Kek", keyboardHeight + "");
     }
 }

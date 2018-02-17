@@ -7,7 +7,7 @@ import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
-import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
+import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 
 /**
  * Created by xaxtix on 13.02.2018.
@@ -20,6 +20,8 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
     RectF rect;
 
     float cornerRadius;
+
+    boolean selected = false;
 
     public SelectableImageView(Context context) {
         super(context);
@@ -39,7 +41,7 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
     private void init() {
         path = new Path();
         rect = new RectF();
-        cornerRadius = AndroidUtilites.dp(getContext(), 4);
+        cornerRadius = AndroidUtilities.dp(getContext(), 4);
     }
 
     @Override
@@ -64,6 +66,7 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
     }
 
     public void setSelected(boolean selected){
-
+        this.selected = selected;
+        invalidate();
     }
 }

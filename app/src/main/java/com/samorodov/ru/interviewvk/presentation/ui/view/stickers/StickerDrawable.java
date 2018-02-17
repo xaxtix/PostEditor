@@ -21,6 +21,8 @@ public class StickerDrawable {
     float translationX;
     float translationY;
 
+    float yOffset;
+
     float scale = 1f;
     float rotate = 0;
 
@@ -41,7 +43,8 @@ public class StickerDrawable {
 
     }
 
-    public void draw(@NonNull Canvas canvas) {
+    public void draw(@NonNull Canvas canvas, int yOffset) {
+        this.yOffset = yOffset;
         canvas.save();
         updateMatrix();
         canvas.concat(transformMatrix);
@@ -53,7 +56,7 @@ public class StickerDrawable {
         transformMatrix.reset();
         transformMatrix.postRotate(rotate, width >> 1, height >> 1);
         transformMatrix.postScale(scale, scale, width >> 1, height >> 1);
-        transformMatrix.postTranslate(translationX, translationY);
+        transformMatrix.postTranslate(translationX, translationY + yOffset);
     }
 
     public void translate(float x, float y) {

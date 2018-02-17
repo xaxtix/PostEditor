@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.samorodov.ru.interviewvk.presentation.ui.view.SizeNotifierLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content"
@@ -56,6 +56,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -94,4 +95,4 @@
             android:text="@string/save"/>
     </LinearLayout>
 
-</LinearLayout>
+</com.samorodov.ru.interviewvk.presentation.ui.view.SizeNotifierLinearLayout>

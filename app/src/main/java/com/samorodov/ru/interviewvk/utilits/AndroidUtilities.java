@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.annimon.stream.function.Consumer;
 
-public class AndroidUtilites {
+public class AndroidUtilities {
 
     public static View inflate(@NonNull ViewGroup parent, @LayoutRes int resId) {
         return LayoutInflater.from(parent.getContext()).inflate(resId, parent, false);

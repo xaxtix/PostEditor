@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.annimon.stream.function.Consumer;
 import com.bumptech.glide.Glide;
 import com.samorodov.ru.interviewvk.R;
-import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
+import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 import com.samorodov.ru.interviewvk.presentation.ui.view.SquareImageView;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(
-                AndroidUtilites.inflate(parent, R.layout.item_view_sticker)
+                AndroidUtilities.inflate(parent, R.layout.item_view_sticker)
         );
     }
 

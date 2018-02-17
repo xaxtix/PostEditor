@@ -43,6 +43,7 @@ public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.
             super(itemView);
             this.imageView = itemView;
             itemView.setOnClickListener(v -> {
+                itemView.setSelected(true);
                 if (onImageSelectedListener != null)
                     onImageSelectedListener.accept(Uri.parse("file:///android_asset/backgrounds/bg_stars_center.png"));
 

@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import com.annimon.stream.function.Consumer;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.StickersAdapter;
-import com.samorodov.ru.interviewvk.utilits.AndroidUtilites;
+import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 import com.samorodov.ru.interviewvk.utilits.AnimatorHelper;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class StickersPopupView extends FrameLayout {
     }
 
     private void init(AttributeSet attrs) {
-        AndroidUtilites.inflateMerge(this, R.layout.view_stickers_popup);
+        AndroidUtilities.inflateMerge(this, R.layout.view_stickers_popup);
         ButterKnife.bind(this);
         blackout.setVisibility(GONE);
         frame.setVisibility(GONE);
@@ -86,7 +86,7 @@ public class StickersPopupView extends FrameLayout {
         if (blackout.getVisibility() == GONE) {
             blackout.setVisibility(VISIBLE);
             frame.setVisibility(VISIBLE);
-            AndroidUtilites.oneshotLayoutChangeListener(frame, view -> {
+            AndroidUtilities.oneshotLayoutChangeListener(frame, view -> {
                 blackout.setAlpha(0);
                 frame.setTranslationY(frame.getHeight());
                 toggleAnimation();
