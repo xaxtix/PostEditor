@@ -41,7 +41,6 @@ public abstract class TextBackground extends Drawable {
     public TextBackground(Context context) {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(getColor(context));
-        paint.setAlpha(50);
 
         porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 

@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.samorodov.ru.interviewvk.R;
-import com.samorodov.ru.interviewvk.presentation.ui.view.drawables.TextBackground;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickerDrawable;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersGestureDetector;
 
@@ -52,6 +51,8 @@ public class PhotoEditorView extends FrameLayout {
 
     @Nullable
     StickerDrawable capturedSticker;
+
+    EditTextStyleDelegate editTextStyleDelegate;
 
     int yOffset = 0;
 
@@ -98,9 +99,8 @@ public class PhotoEditorView extends FrameLayout {
         editText.setHint(R.string.what_new);
         editText.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         editText.setGravity(Gravity.CENTER);
-        editText.setBackground(new TextBackground(getContext()));
-        editText.setLayerType(LAYER_TYPE_SOFTWARE,null);
 
+        editTextStyleDelegate = new EditTextStyleDelegate(editText);
 
 
         addView(editText);
@@ -188,5 +188,9 @@ public class PhotoEditorView extends FrameLayout {
         drawStickers();
         invalidate();
         Log.d("Kek", keyboardHeight + "");
+    }
+
+    public void toggleEditTextStyle(){
+        editTextStyleDelegate.toggleStyle();
     }
 }

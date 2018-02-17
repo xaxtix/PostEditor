@@ -78,13 +78,17 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
         ));
 
         imagePicker.setAdapter(imagePickerAdapter = new ImagePickerAdapter());
-        imagePickerAdapter.setOnImageSelectedListener(uri -> {
-            editorView.setBackgroundImage(uri);
-        });
+        imagePickerAdapter.setOnImageSelectedListener(uri ->
+                editorView.setBackgroundImage(uri)
+        );
 
-        sizeNotifier.setKeyboardSizeListenerListener(keyboardHeight -> {
-            editorView.setKeyboardHeight(keyboardHeight);
-        });
+        sizeNotifier.setKeyboardSizeListenerListener(keyboardHeight ->
+                editorView.setKeyboardHeight(keyboardHeight)
+        );
+
+        fontStyleButton.setOnClickListener(v ->
+                editorView.toggleEditTextStyle()
+        );
 
     }
 
