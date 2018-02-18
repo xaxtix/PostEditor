@@ -4,24 +4,28 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.annimon.stream.function.Consumer;
 import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 
 
-public class SizeNotifierLinearLayout extends LinearLayout {
+public class SizeNotifierFrameLayout extends FrameLayout {
 
     private Rect rect = new Rect();
 
-    Consumer<Integer> keyboardSizeListener;
+    private Consumer<Integer> keyboardSizeListener;
 
-    public SizeNotifierLinearLayout(Context context) {
+    int lastKeyboardSize = 0;
+
+    public SizeNotifierFrameLayout(Context context) {
         super(context);
     }
 
-    public SizeNotifierLinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public SizeNotifierFrameLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -33,23 +37,25 @@ public class SizeNotifierLinearLayout extends LinearLayout {
 
     public int getKeyboardHeight() {
         View rootView = getRootView();
-        getWindowVisibleDisplayFrame(rect);
+        rootView.getWindowVisibleDisplayFrame(rect);
         int usableViewHeight = rootView.getHeight();
-        return usableViewHeight - (rect.bottom - rect.top);
+        return usableViewHeight - (rect.bottom - rect.top)
+                - AndroidUtilities.getStatusBarSize(rootView, rect)
+                - AndroidUtilities.getNavigationBarSize(rootView, rect);
     }
 
     public void notifyKeyboardHeightChanged() {
         if (keyboardSizeListener == null) return;
         int keyboardHeight = getKeyboardHeight();
-        post(() -> {
-            if (keyboardSizeListener != null) {
-                keyboardSizeListener.accept(keyboardHeight);
-            }
-        });
+        if (lastKeyboardSize == keyboardHeight) return;
+        lastKeyboardSize = keyboardHeight;
 
+        if (keyboardSizeListener != null) {
+            keyboardSizeListener.accept(keyboardHeight);
+        }
     }
 
-    public void setKeyboardSizeListenerListener(Consumer<Integer> keyboardSizeListener) {
+    public void setKeyboardSizeListener(Consumer<Integer> keyboardSizeListener) {
         this.keyboardSizeListener = keyboardSizeListener;
     }
 }

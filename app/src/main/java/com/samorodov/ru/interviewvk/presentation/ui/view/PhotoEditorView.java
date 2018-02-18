@@ -54,10 +54,6 @@ public class PhotoEditorView extends FrameLayout {
 
     EditTextStyleDelegate editTextStyleDelegate;
 
-    int yOffset = 0;
-
-    private int keyboardHeight;
-
     public PhotoEditorView(Context context) {
         super(context);
         init(null);
@@ -115,6 +111,8 @@ public class PhotoEditorView extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (stickersLayer == null || stickersLayer.getWidth() != getMeasuredWidth() ||
                 stickersLayer.getHeight() != getMeasuredHeight()) {
+            stickersLayer = null;
+            if (getMeasuredWidth() <= 0 || getMeasuredHeight() <= 0) return;
             stickersLayer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
             stickersLayerCanvas = new Canvas(stickersLayer);
             drawStickers();
@@ -125,8 +123,9 @@ public class PhotoEditorView extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         if (background != null)
             canvas.drawBitmap(background, 0, 0, emptyPaint);
-        canvas.drawBitmap(stickersLayer, 0, 0, emptyPaint);
-        if (capturedSticker != null) capturedSticker.draw(canvas, yOffset);
+        if (stickersLayer != null)
+            canvas.drawBitmap(stickersLayer, 0, 0, emptyPaint);
+        if (capturedSticker != null) capturedSticker.draw(canvas);
         super.onDraw(canvas);
     }
 
@@ -147,7 +146,7 @@ public class PhotoEditorView extends FrameLayout {
 
                         stickerDrawable.translate(
                                 stickerDrawable.getTranslationX() + (getMeasuredWidth() >> 1),
-                                stickerDrawable.getTranslationY() + (getMeasuredHeight() >> 1) - yOffset
+                                stickerDrawable.getTranslationY() + (getMeasuredHeight() >> 1)
                         );
 
                         stickers.add(stickerDrawable);
@@ -158,10 +157,11 @@ public class PhotoEditorView extends FrameLayout {
     }
 
     private void drawStickers() {
+        if (stickersLayer == null) return;
         stickersLayerCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         int n = stickers.size();
         for (int i = 0; i < n; i++) {
-            stickers.get(i).draw(stickersLayerCanvas, yOffset);
+            stickers.get(i).draw(stickersLayerCanvas);
         }
 
     }
@@ -182,15 +182,9 @@ public class PhotoEditorView extends FrameLayout {
                 });
     }
 
-    public void setKeyboardHeight(int keyboardHeight) {
-        this.keyboardHeight = keyboardHeight;
-        yOffset = -keyboardHeight >> 1;
-        drawStickers();
-        invalidate();
-        Log.d("Kek", keyboardHeight + "");
-    }
-
-    public void toggleEditTextStyle(){
+    public void toggleEditTextStyle() {
         editTextStyleDelegate.toggleStyle();
     }
+
+
 }

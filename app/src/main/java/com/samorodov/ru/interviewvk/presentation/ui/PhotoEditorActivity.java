@@ -3,10 +3,11 @@ package com.samorodov.ru.interviewvk.presentation.ui;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.Size;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -18,7 +19,7 @@ import com.samorodov.ru.interviewvk.di.component.DaggerPhotoEditorComponent;
 import com.samorodov.ru.interviewvk.presentation.presenter.PhotoEditorPresenter;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.ImagePickerAdapter;
 import com.samorodov.ru.interviewvk.presentation.ui.view.PhotoEditorView;
-import com.samorodov.ru.interviewvk.presentation.ui.view.SizeNotifierLinearLayout;
+import com.samorodov.ru.interviewvk.presentation.ui.view.SizeNotifierFrameLayout;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersPopupView;
 import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 import com.samorodov.ru.interviewvk.utilits.RecyclerViewUtils;
@@ -36,8 +37,11 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     @BindView(R.id.toolbar) FrameLayout toolbar;
     @BindView(R.id.editor_view) PhotoEditorView editorView;
     @BindView(android.R.id.content) ViewGroup content;
-    @BindView(R.id.content) SizeNotifierLinearLayout sizeNotifier;
+    @BindView(R.id.content) SizeNotifierFrameLayout sizeNotifier;
     @BindView(R.id.image_picker) RecyclerView imagePicker;
+    @BindView(R.id.bottomKeyboard) FrameLayout bottomKeyboard;
+    @BindView(R.id.bottom_frame) View bottomFrame;
+    @BindView(R.id.save) Button save;
 
     @Nullable
     StickersPopupView stickersPopup;
@@ -46,6 +50,8 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     PhotoEditorPresenter presenter;
 
     ImagePickerAdapter imagePickerAdapter;
+
+    int keyboardHeight;
 
     @ProvidePresenter
     public PhotoEditorPresenter providePresenter() {
@@ -62,12 +68,17 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        keyboardHeight = getResources().getDimensionPixelSize(R.dimen.default_keyboard_size);
+
+        bottomKeyboard.setVisibility(View.GONE);
+
         stickersButton.setOnClickListener(v -> {
             if (stickersPopup == null) {
                 initStickersPopup();
             }
 
             stickersPopup.toggle();
+            AndroidUtilities.hideKeyboard(editorView);
         });
 
         imagePicker.setLayoutManager(new LinearLayoutManager(
@@ -82,13 +93,38 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 editorView.setBackgroundImage(uri)
         );
 
-        sizeNotifier.setKeyboardSizeListenerListener(keyboardHeight ->
-                editorView.setKeyboardHeight(keyboardHeight)
-        );
+        sizeNotifier.setKeyboardSizeListener(keyboardHeight -> {
+            if (keyboardHeight > 0 && this.keyboardHeight != keyboardHeight) {
+                this.keyboardHeight = keyboardHeight;
+                bottomKeyboard.getLayoutParams().height = keyboardHeight;
+            }
+            if (keyboardHeight == 0) {
+                keyboardHeight = (bottomKeyboard.getVisibility() != View.VISIBLE) ?
+                        0 : this.keyboardHeight;
+            }
+
+            editorView.setTranslationY(-keyboardHeight >> 1);
+            bottomFrame.setTranslationY(-keyboardHeight);
+        });
 
         fontStyleButton.setOnClickListener(v ->
                 editorView.toggleEditTextStyle()
         );
+
+        save.setOnClickListener(v -> {
+            bottomKeyboard.setVisibility(bottomKeyboard.getVisibility() == View.VISIBLE ?
+                    View.GONE : View.VISIBLE);
+            if (AndroidUtilities.isKeyboardShowed(editorView)) return;
+            if (bottomKeyboard.getVisibility() == View.VISIBLE) {
+                AndroidUtilities.hideKeyboard(editorView);
+                editorView.setTranslationY(-keyboardHeight >> 1);
+                bottomFrame.setTranslationY(-keyboardHeight);
+            } else {
+                editorView.setTranslationY(0);
+                bottomFrame.setTranslationY(0);
+            }
+
+        });
 
     }
 
