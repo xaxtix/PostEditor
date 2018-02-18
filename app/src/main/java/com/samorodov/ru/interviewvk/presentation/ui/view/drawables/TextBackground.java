@@ -29,6 +29,8 @@ public abstract class TextBackground extends Drawable {
     private final int verticalPadding;
     private final PorterDuffXfermode porterDuffXfermode;
 
+    private final float round;
+
     @Override
     public boolean getPadding(@NonNull Rect padding) {
         padding.set(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
@@ -49,7 +51,11 @@ public abstract class TextBackground extends Drawable {
         rectF = new RectF();
         offsetY = AndroidUtilities.dp(context, 1);
 
-        horizontalPadding = AndroidUtilities.dp(context, 8);
+        float dp_8 = AndroidUtilities.dp(context, 8);
+
+        round = dp_8;
+
+        horizontalPadding = (int) dp_8;
         verticalPadding = horizontalPadding >> 1;
 
     }
@@ -57,14 +63,14 @@ public abstract class TextBackground extends Drawable {
     @Override
     public void draw(@NonNull Canvas canvas) {
         rectF.set(getBounds());
-        canvas.drawRoundRect(rectF, 10, 10, shadowPaint);
+        canvas.drawRoundRect(rectF, round, round, shadowPaint);
         rectF.set(rectF.left, rectF.top, rectF.right, rectF.bottom - offsetY);
         if (paint.getAlpha() < 255) {
             paint.setXfermode(porterDuffXfermode);
-            canvas.drawRoundRect(rectF, 10, 10, paint);
+            canvas.drawRoundRect(rectF, round, round, paint);
             paint.setXfermode(null);
         }
-        canvas.drawRoundRect(rectF, 10, 10, paint);
+        canvas.drawRoundRect(rectF, round, round, paint);
     }
 
     @Override

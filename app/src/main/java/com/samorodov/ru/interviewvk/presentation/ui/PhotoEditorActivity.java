@@ -39,7 +39,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     @BindView(android.R.id.content) ViewGroup content;
     @BindView(R.id.content) SizeNotifierFrameLayout sizeNotifier;
     @BindView(R.id.image_picker) RecyclerView imagePicker;
-    @BindView(R.id.bottomKeyboard) FrameLayout bottomKeyboard;
+    @BindView(R.id.bottomKeyboard) FrameLayout bottomPannel;
     @BindView(R.id.bottom_frame) View bottomFrame;
     @BindView(R.id.save) Button save;
 
@@ -52,6 +52,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     ImagePickerAdapter imagePickerAdapter;
 
     int keyboardHeight;
+    boolean keyboardShowing;
 
     @ProvidePresenter
     public PhotoEditorPresenter providePresenter() {
@@ -65,12 +66,13 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_photo_editor);
         ButterKnife.bind(this);
 
         keyboardHeight = getResources().getDimensionPixelSize(R.dimen.default_keyboard_size);
 
-        bottomKeyboard.setVisibility(View.GONE);
+        bottomPannel.getLayoutParams().height = keyboardHeight;
+        bottomPannel.setVisibility(View.GONE);
 
         stickersButton.setOnClickListener(v -> {
             if (stickersPopup == null) {
@@ -94,38 +96,37 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
         );
 
         sizeNotifier.setKeyboardSizeListener(keyboardHeight -> {
-            if (keyboardHeight > 0 && this.keyboardHeight != keyboardHeight) {
+            keyboardShowing = keyboardHeight > 0;
+            if (keyboardShowing && this.keyboardHeight != keyboardHeight) {
                 this.keyboardHeight = keyboardHeight;
-                bottomKeyboard.getLayoutParams().height = keyboardHeight;
+                bottomPannel.getLayoutParams().height = keyboardHeight;
+                bottomPannel.requestLayout();
             }
-            if (keyboardHeight == 0) {
-                keyboardHeight = (bottomKeyboard.getVisibility() != View.VISIBLE) ?
-                        0 : this.keyboardHeight;
-            }
-
-            editorView.setTranslationY(-keyboardHeight >> 1);
-            bottomFrame.setTranslationY(-keyboardHeight);
+            updateKeyboardState();
         });
 
         fontStyleButton.setOnClickListener(v ->
                 editorView.toggleEditTextStyle()
         );
 
-        save.setOnClickListener(v -> {
-            bottomKeyboard.setVisibility(bottomKeyboard.getVisibility() == View.VISIBLE ?
-                    View.GONE : View.VISIBLE);
-            if (AndroidUtilities.isKeyboardShowed(editorView)) return;
-            if (bottomKeyboard.getVisibility() == View.VISIBLE) {
+        imagePickerAdapter.setOnAdditionalListener(showBottomPanel -> {
+            if (showBottomPanel)
                 AndroidUtilities.hideKeyboard(editorView);
-                editorView.setTranslationY(-keyboardHeight >> 1);
-                bottomFrame.setTranslationY(-keyboardHeight);
-            } else {
-                editorView.setTranslationY(0);
-                bottomFrame.setTranslationY(0);
-            }
-
+            bottomPannel.setVisibility(showBottomPanel ?
+                    View.VISIBLE : View.GONE);
+            updateKeyboardState();
         });
 
+    }
+
+    private void updateKeyboardState() {
+        if (bottomPannel.getVisibility() == View.VISIBLE || keyboardShowing) {
+            editorView.setTranslationY(-keyboardHeight >> 1);
+            bottomFrame.setTranslationY(-keyboardHeight);
+        } else {
+            editorView.setTranslationY(0);
+            bottomFrame.setTranslationY(0);
+        }
     }
 
     private void initStickersPopup() {

@@ -101,10 +101,6 @@
                 android:text="@string/save"/>
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider"/>
 
     </LinearLayout>
 
@@ -112,6 +108,16 @@
         android:id="@+id/bottomKeyboard"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="bottom"/>
+        android:background="@android:color/white"
+        android:layout_gravity="bottom">
+        <View
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"/>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 
 </com.samorodov.ru.interviewvk.presentation.ui.view.SizeNotifierFrameLayout>
