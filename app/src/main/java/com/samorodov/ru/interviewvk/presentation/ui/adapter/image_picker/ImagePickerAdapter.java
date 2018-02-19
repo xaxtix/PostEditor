@@ -10,6 +10,7 @@ import com.annimon.stream.function.Consumer;
 import com.bumptech.glide.Glide;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerBaseItem;
+import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerEmptyItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerUriItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerAdditionalItem;
 import com.samorodov.ru.interviewvk.presentation.ui.view.SelectableImageView;
@@ -25,23 +26,27 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * ♪♫•*¨*•.¸¸❤¸¸.•*¨*•♫♪ﾟ+｡☆*゜+。.。:.*.ﾟ ﾟ¨ﾟﾟ･*:..｡o○☆ﾟ+｡
  */
 
-public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.ViewHolder> {
-
+public class ImagePickerAdapter extends BaseImagePickerAdapter {
 
     @Nullable
     private Consumer<Uri> onImageSelectedListener;
 
     private Consumer<Boolean> onAdditionalListener;
 
-    private final List<ImagePickerBaseItem> itemList = new ArrayList<>(3);
 
-    private int selectedPosition = 0;
+    @Override
+    protected List<ImagePickerBaseItem> createItemList() {
+        List<ImagePickerBaseItem> itemList = new ArrayList<>(4);
 
-    public ImagePickerAdapter() {
         Consumer<Uri> uriConsumer = uri -> {
             if (onImageSelectedListener != null)
                 onImageSelectedListener.accept(uri);
         };
+
+        itemList.add(new ImagePickerEmptyItem(v -> {
+            if (onImageSelectedListener != null)
+                onImageSelectedListener.accept(null);
+        }));
 
         itemList.add(new ImagePickerUriItem(
                 R.drawable.thumb_beach,
@@ -55,51 +60,18 @@ public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.
                 uriConsumer
         ));
 
-        itemList.add(new ImagePickerAdditionalItem(v -> {
+        itemList.add(new ImagePickerAdditionalItem(R.drawable.ic_toolbar_new, v -> {
             if (onAdditionalListener != null)
                 onAdditionalListener.accept(true);
         }));
+
+        return itemList;
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        SelectableImageView imageView = new SelectableImageView(parent.getContext());
-        imageView.setLayoutParams(new RecyclerView.LayoutParams(MATCH_PARENT,MATCH_PARENT));
-        return new ViewHolder(imageView);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ImagePickerBaseItem item = itemList.get(position);
-        item.bindImage(holder.imageView);
-        if (selectedPosition == position) holder.imageView.setSelected(true);
-        else holder.imageView.setSelected(false);
-
-        holder.imageView.setOnClickListener(v -> {
-            int oldPosition = selectedPosition;
-            selectedPosition = position;
-            holder.imageView.setSelected(true);
-            notifyItemChanged(oldPosition);
-            item.accept(v);
-            if (position != itemList.size() - 1 && onAdditionalListener != null)
-                onAdditionalListener.accept(false);
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        SelectableImageView imageView;
-
-        public ViewHolder(SelectableImageView itemView) {
-            super(itemView);
-            this.imageView = itemView;
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        }
+    protected void onItemClick(ImagePickerBaseItem item, ViewHolder holder, int position) {
+        super.onItemClick(item, holder, position);
+        if (position != getItemCount() - 1 && onAdditionalListener != null)
+            onAdditionalListener.accept(false);
     }
 
     public void setOnImageSelectedListener(@Nullable Consumer<Uri> onImageSelectedListener) {
@@ -109,4 +81,5 @@ public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.
     public void setOnAdditionalListener(Consumer<Boolean> onAdditionalListener) {
         this.onAdditionalListener = onAdditionalListener;
     }
+
 }

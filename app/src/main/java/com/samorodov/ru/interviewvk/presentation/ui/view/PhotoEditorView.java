@@ -166,8 +166,13 @@ public class PhotoEditorView extends FrameLayout {
 
     }
 
-    public void setBackgroundImage(Uri backgroundImage) {
+    public void setBackgroundImage(@Nullable Uri backgroundImage) {
         background = null;
+
+        if (backgroundImage == null) {
+            invalidate();
+            return;
+        }
 
         Glide.with(this)
                 .asBitmap()

@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -33,6 +34,7 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
 
     int padding;
 
+    boolean showFillColor;
 
     public SelectableImageView(Context context) {
         super(context);
@@ -63,7 +65,6 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
         strokePaint.setStyle(Paint.Style.STROKE);
 
         backgroundPaint = new Paint();
-        backgroundPaint.setColor(ContextCompat.getColor(getContext(), R.color.blue_20));
     }
 
     @Override
@@ -88,10 +89,10 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
         if (selected) {
             canvas.drawRoundRect(rect, cornerRadius, cornerRadius, strokePaint);
             canvas.clipRect(insetRect);
-            canvas.drawRect(insetRect,backgroundPaint);
+            if (showFillColor) canvas.drawRect(insetRect, backgroundPaint);
             super.onDraw(canvas);
-        }else {
-            canvas.drawPaint(backgroundPaint);
+        } else {
+            if (showFillColor) canvas.drawPaint(backgroundPaint);
             super.onDraw(canvas);
         }
         canvas.restore();
@@ -101,5 +102,14 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
     public void setSelected(boolean selected) {
         this.selected = selected;
         invalidate();
+    }
+
+    public void setFillColor(@ColorRes int fillColor) {
+        backgroundPaint.setColor(ContextCompat.getColor(getContext(), fillColor));
+        showFillColor = true;
+    }
+
+    public void clearFillColor() {
+        showFillColor = false;
     }
 }
