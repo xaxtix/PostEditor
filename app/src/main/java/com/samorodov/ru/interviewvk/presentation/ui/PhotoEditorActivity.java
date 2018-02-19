@@ -3,6 +3,7 @@ package com.samorodov.ru.interviewvk.presentation.ui;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.di.component.DaggerPhotoEditorComponent;
 import com.samorodov.ru.interviewvk.presentation.presenter.PhotoEditorPresenter;
+import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.AdditioanalImagePickerAdapter;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.ImagePickerAdapter;
 import com.samorodov.ru.interviewvk.presentation.ui.view.PhotoEditorView;
 import com.samorodov.ru.interviewvk.presentation.ui.view.SizeNotifierFrameLayout;
@@ -39,9 +41,10 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     @BindView(android.R.id.content) ViewGroup content;
     @BindView(R.id.content) SizeNotifierFrameLayout sizeNotifier;
     @BindView(R.id.image_picker) RecyclerView imagePicker;
-    @BindView(R.id.bottomKeyboard) FrameLayout bottomPannel;
+    @BindView(R.id.bottomKeyboard) FrameLayout bottomPanel;
     @BindView(R.id.bottom_frame) View bottomFrame;
     @BindView(R.id.save) Button save;
+    @BindView(R.id.additional_recycler) RecyclerView additionalRecycler;
 
     @Nullable
     StickersPopupView stickersPopup;
@@ -71,8 +74,8 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
 
         keyboardHeight = getResources().getDimensionPixelSize(R.dimen.default_keyboard_size);
 
-        bottomPannel.getLayoutParams().height = keyboardHeight;
-        bottomPannel.setVisibility(View.GONE);
+        bottomPanel.getLayoutParams().height = keyboardHeight;
+        bottomPanel.setVisibility(View.GONE);
 
         stickersButton.setOnClickListener(v -> {
             if (stickersPopup == null) {
@@ -99,8 +102,8 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
             keyboardShowing = keyboardHeight > 0;
             if (keyboardShowing && this.keyboardHeight != keyboardHeight) {
                 this.keyboardHeight = keyboardHeight;
-                bottomPannel.getLayoutParams().height = keyboardHeight;
-                bottomPannel.requestLayout();
+                bottomPanel.getLayoutParams().height = keyboardHeight;
+                bottomPanel.requestLayout();
             }
             updateKeyboardState();
         });
@@ -112,15 +115,27 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
         imagePickerAdapter.setOnAdditionalListener(showBottomPanel -> {
             if (showBottomPanel)
                 AndroidUtilities.hideKeyboard(editorView);
-            bottomPannel.setVisibility(showBottomPanel ?
+            bottomPanel.setVisibility(showBottomPanel ?
                     View.VISIBLE : View.GONE);
             updateKeyboardState();
         });
 
+        additionalRecycler.setLayoutManager(new GridLayoutManager(
+                this,
+                2,
+                LinearLayoutManager.HORIZONTAL,
+                false
+        ));
+
+        additionalRecycler.setAdapter(new AdditioanalImagePickerAdapter());
+        additionalRecycler.addItemDecoration(new RecyclerViewUtils.ItemOffsetDecoration(
+                AndroidUtilities.dp(this, 4)
+        ));
+
     }
 
     private void updateKeyboardState() {
-        if (bottomPannel.getVisibility() == View.VISIBLE || keyboardShowing) {
+        if (bottomPanel.getVisibility() == View.VISIBLE || keyboardShowing) {
             editorView.setTranslationY(-keyboardHeight >> 1);
             bottomFrame.setTranslationY(-keyboardHeight);
         } else {

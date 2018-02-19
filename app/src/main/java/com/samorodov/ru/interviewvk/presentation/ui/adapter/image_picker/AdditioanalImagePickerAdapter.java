@@ -7,26 +7,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.annimon.stream.function.Consumer;
-import com.bumptech.glide.Glide;
 import com.samorodov.ru.interviewvk.R;
+import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerAdditionalItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerBaseItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerUriItem;
-import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerAdditionalItem;
 import com.samorodov.ru.interviewvk.presentation.ui.view.SelectableImageView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
- * Created by xaxtix on 13.02.2018.
+ * Created by xaxtix on 19.02.2018.
  * ♪♫•*¨*•.¸¸❤¸¸.•*¨*•♫♪ﾟ+｡☆*゜+。.。:.*.ﾟ ﾟ¨ﾟﾟ･*:..｡o○☆ﾟ+｡
  */
 
-public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.ViewHolder> {
-
+public class AdditioanalImagePickerAdapter extends RecyclerView.Adapter
+        <AdditioanalImagePickerAdapter.ViewHolder>{
 
     @Nullable
     private Consumer<Uri> onImageSelectedListener;
@@ -37,7 +35,7 @@ public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.
 
     private int selectedPosition = 0;
 
-    public ImagePickerAdapter() {
+    public AdditioanalImagePickerAdapter() {
         Consumer<Uri> uriConsumer = uri -> {
             if (onImageSelectedListener != null)
                 onImageSelectedListener.accept(uri);
