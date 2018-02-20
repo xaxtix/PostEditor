@@ -10,6 +10,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -93,6 +94,9 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
 
         bottomPanel.getLayoutParams().height = keyboardHeight;
         bottomPanel.setVisibility(View.GONE);
+        ((SimpleItemAnimator) imagePicker.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) additionalRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
+
 
         stickersButton.setOnClickListener(v -> {
             if (stickersPopup == null) {
@@ -176,15 +180,15 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 }
 
                 if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.samorodov.ru.interviewvk.fileprovider",
-                            photoFile);
+                    Uri photoURI = Uri.fromFile(photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
             }
 
         });
+
+
 
     }
 

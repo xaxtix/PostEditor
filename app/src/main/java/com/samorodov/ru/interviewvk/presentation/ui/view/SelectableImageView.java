@@ -69,10 +69,8 @@ public class SelectableImageView extends android.support.v7.widget.AppCompatImag
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec,heightMeasureSpec);
 
-        int size = MeasureSpec.getSize(heightMeasureSpec);
-
-        setMeasuredDimension(size, size);
 
         int dp_4 = AndroidUtilities.dp(getContext(), 4);
 
