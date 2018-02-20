@@ -30,33 +30,33 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
 
-    //Glide for images
+    // Image load and cache
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
-    //Butter knife
+    // Butter knife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
-    //Java Stream API
+    // Java Stream API
     implementation 'com.annimon:stream:1.1.9'
 
-    //Multitouch gesture detector
+    // Multitouch gesture detector
     implementation 'com.github.Almeros:android-gesture-detectors:v1.0'
 
     // Transition Manager for api 16+
     implementation 'com.andkulikov:transitionseverywhere:1.7.0'
 
-    //The simplest MVP solution
+    // The simplest MVP solution
     implementation 'com.arello-mobile:moxy:1.5.3'
     annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.3'
     implementation 'com.arello-mobile:moxy-app-compat:1.5.3'
 
-    //Rx java
+    // Rx java
     implementation "io.reactivex.rxjava2:rxjava:2.1.9"
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
-    //Dagger
+    // Dagger
     compile 'com.google.dagger:dagger:2.14.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.14'
 }

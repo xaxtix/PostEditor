@@ -28,12 +28,7 @@ public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseIm
     private int selectedPosition = 0;
 
     protected void onItemClick(ImagePickerBaseItem item, ViewHolder holder, int position) {
-        int oldPosition = selectedPosition;
-        selectedPosition = position;
-
         item.accept(holder.imageView);
-        holder.imageView.setSelected(true);
-        notifyItemChanged(oldPosition);
     }
 
     @Override
@@ -69,7 +64,15 @@ public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseIm
     }
 
     public void setSelectedPosition(int selectedPosition) {
+        int oldPosition = getSelectedPosition();
         this.selectedPosition = selectedPosition;
+
+        notifyItemChanged(oldPosition);
+        notifyItemChanged(selectedPosition);
+    }
+
+    public int getSelectedPosition() {
+        return selectedPosition;
     }
 
     public List<ImagePickerBaseItem> getItemList() {

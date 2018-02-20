@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,15 +31,20 @@ import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersPopupV
 import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 import com.samorodov.ru.interviewvk.utilits.RecyclerViewUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.samorodov.ru.interviewvk.utilits.FileUtils.createImageFile;
+
 public class PhotoEditorActivity extends MvpAppCompatActivity implements
         com.samorodov.ru.interviewvk.presentation.view.PhotoEditorView {
 
-    private int PICK_IMAGE_REQUEST = 1;
+    private final static int PICK_IMAGE_REQUEST = 1;
+    private final static int REQUEST_TAKE_PHOTO = 2;
 
     @BindView(R.id.font_style_button) ImageView fontStyleButton;
     @BindView(R.id.stickers_button) ImageView stickersButton;
@@ -50,6 +57,8 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     @BindView(R.id.bottom_frame) View bottomFrame;
     @BindView(R.id.save) Button save;
     @BindView(R.id.additional_recycler) RecyclerView additionalRecycler;
+
+    File photoFile;
 
     @Nullable
     StickersPopupView stickersPopup;
@@ -102,9 +111,10 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
         ));
 
         imagePicker.setAdapter(imagePickerAdapter = new ImagePickerAdapter());
-        imagePickerAdapter.setOnImageSelectedListener(uri ->
-                editorView.setBackgroundImage(uri)
-        );
+        imagePickerAdapter.setOnImageSelectedListener(uri -> {
+            editorView.setBackgroundImage(uri);
+            imagePickerAdapter.setSelectedPosition(-1);
+        });
 
         sizeNotifier.setKeyboardSizeListener(keyboardHeight -> {
             keyboardShowing = keyboardHeight > 0;
@@ -141,11 +151,39 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 AndroidUtilities.dp(this, 4)
         ));
 
+        additionalImagePickerAdapter.setOnImageSelectedListener(uri -> {
+            editorView.setBackgroundImage(uri);
+            imagePickerAdapter.setSelectedPosition(imagePickerAdapter.getItemCount() - 1);
+        });
+
         additionalImagePickerAdapter.setOnPickImageListener(ignore -> {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        });
+
+        additionalImagePickerAdapter.setTakeFotoListener(ignore -> {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
+                photoFile = null;
+                try {
+                    photoFile = createImageFile(this);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.samorodov.ru.interviewvk.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+            }
+
         });
 
     }
@@ -183,6 +221,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
 
     @Override
     public void addBackgroundImageToPicker(Uri image) {
+        editorView.setBackgroundImage(image);
         additionalImagePickerAdapter.addImage(image);
     }
 
@@ -219,11 +258,16 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK &&
-                data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST
+                && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
             presenter.addBackgroundImage(uri);
+        }
 
+        if (requestCode == REQUEST_TAKE_PHOTO
+                && resultCode == RESULT_OK) {
+            Uri uri = Uri.fromFile(photoFile);
+            presenter.addBackgroundImage(uri);
         }
     }
 }

@@ -12,17 +12,18 @@ import javax.inject.Inject;
 import dagger.Lazy;
 
 @InjectViewState
-public class PhotoEditorPresenter extends MvpPresenter<PhotoEditorView> {
+public class PhotoEditorPresenter extends BasePresenter<PhotoEditorView> {
 
     @Inject
     Lazy<PhotoEditorInteractor> interactor;
 
     public void loadStickers() {
-        interactor.get().loadStickers()
-                .subscribe(
-                        stickers -> getViewState().setStickers(stickers),
-                        Throwable::printStackTrace
-                );
+        subscriptions.add(
+                interactor.get().loadStickers()
+                        .subscribe(
+                                stickers -> getViewState().setStickers(stickers),
+                                Throwable::printStackTrace
+                        ));
     }
 
     public void addBackgroundImage(Uri image) {

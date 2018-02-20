@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickerDrawable;
@@ -47,7 +49,7 @@ public class PhotoEditorView extends FrameLayout {
     Canvas stickersLayerCanvas;
 
     @Nullable
-    Bitmap background;
+    BitmapDrawable background;
 
     @Nullable
     StickerDrawable capturedSticker;
@@ -117,13 +119,16 @@ public class PhotoEditorView extends FrameLayout {
             stickersLayerCanvas = new Canvas(stickersLayer);
             drawStickers();
         }
+        updateBackgroundSize();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (background != null)
-            canvas.drawBitmap(background, 0, 0, emptyPaint);
-        if (stickersLayer != null)
+        if (background != null) {
+            canvas.clipRect(background.getBounds());
+            background.draw(canvas);
+        }
+        if (stickersLayer != null && stickers.size() > 0)
             canvas.drawBitmap(stickersLayer, 0, 0, emptyPaint);
         if (capturedSticker != null) capturedSticker.draw(canvas);
         super.onDraw(canvas);
@@ -148,6 +153,7 @@ public class PhotoEditorView extends FrameLayout {
                                 stickerDrawable.getTranslationX() + (getMeasuredWidth() >> 1),
                                 stickerDrawable.getTranslationY() + (getMeasuredHeight() >> 1)
                         );
+
 
                         stickers.add(stickerDrawable);
                         drawStickers();
@@ -178,13 +184,28 @@ public class PhotoEditorView extends FrameLayout {
                 .asBitmap()
                 .load(backgroundImage)
                 .into(new SimpleTarget<Bitmap>() {
+
                     @Override
-                    public void onResourceReady(@NonNull Bitmap resource,
-                                                @Nullable Transition<? super Bitmap> transition) {
-                        background = resource;
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        background = new BitmapDrawable(getResources(), resource);
+                        updateBackgroundSize();
                         invalidate();
                     }
                 });
+    }
+
+    private void updateBackgroundSize() {
+        if (background == null) return;
+        int height = (int) (((float) getMeasuredWidth()) / background.getIntrinsicWidth()
+                * background.getIntrinsicHeight());
+        int cY = getMeasuredHeight() >> 1;
+        int heightHalf = height >> 1;
+        background.setBounds(
+                0,
+                cY - heightHalf,
+                getMeasuredWidth(),
+                cY + heightHalf
+        );
     }
 
     public void toggleEditTextStyle() {
