@@ -46,7 +46,6 @@ public class PhotoEditorInteractor extends BaseInteractor {
                 .doOnNext(view -> editorView.preDrawIntoBitmap())
                 .observeOn(Schedulers.computation())
                 .map(view -> {
-                    Log.d("Kek","kek" + Thread.currentThread());
                     Bitmap bitmap = editorView.prepareBitmap();
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss", Locale.ENGLISH);
                     return MediaStore.Images.Media.insertImage(
