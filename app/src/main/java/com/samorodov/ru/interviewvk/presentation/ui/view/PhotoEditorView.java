@@ -242,14 +242,21 @@ public class PhotoEditorView extends FrameLayout {
             canvas.translate(0, -(getMeasuredHeight() - bounds.height() >> 1));
         }
 
+
+        draw(canvas);
+
+        editText.post(() -> {
+            editText.setCursorVisible(true);
+            editText.setVisibility(VISIBLE);
+        });
+
+        return bitmap;
+    }
+
+    public void preDrawIntoBitmap() {
         editText.clearFocus();
         editText.setCursorVisible(false);
         if (isEmpty(editText.getText()))
             editText.setVisibility(GONE);
-        draw(canvas);
-
-        editText.setCursorVisible(true);
-        editText.setVisibility(VISIBLE);
-        return bitmap;
     }
 }
