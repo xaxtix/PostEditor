@@ -77,7 +77,6 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/image_picker"
-                android:background="@color/black_50"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

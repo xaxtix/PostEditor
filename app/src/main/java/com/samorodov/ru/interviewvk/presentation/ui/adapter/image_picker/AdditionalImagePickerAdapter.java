@@ -31,6 +31,11 @@ public class AdditionalImagePickerAdapter extends BaseImagePickerAdapter {
     }
 
     @Override
+    public int getItemLayout() {
+        return R.layout.item_image_picker_additional;
+    }
+
+    @Override
     protected List<ImagePickerBaseItem> createItemList() {
         List<ImagePickerBaseItem> itemList = new ArrayList<>();
 
@@ -47,9 +52,10 @@ public class AdditionalImagePickerAdapter extends BaseImagePickerAdapter {
         return itemList;
     }
 
-    public void setOnImageSelectedListener(Consumer<Uri> listener){
+    public void setOnImageSelectedListener(Consumer<Uri> listener) {
         onImageSelectedListener = listener;
     }
+
     public void setOnPickImageListener(Consumer listener) {
         this.onPickImageListener = listener;
     }
@@ -62,5 +68,6 @@ public class AdditionalImagePickerAdapter extends BaseImagePickerAdapter {
         getItemList().add(2, new ImagePickerUriItem(0, image, uriConsumer));
         setSelectedPosition(2);
         notifyItemInserted(2);
+        notifyItemRangeChanged(2, getItemCount() - 1);
     }
 }

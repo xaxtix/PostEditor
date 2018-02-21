@@ -13,4 +13,6 @@ public interface PhotoEditorView extends MvpView {
     void setBackgroundImagesToPicker(List<Uri> images);
 
     void addBackgroundImageToPicker(Uri image);
+
+    void imageSavedSuccess(String uri);
 }

@@ -1,11 +1,17 @@
 package com.samorodov.ru.interviewvk.presentation.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.SyncStateContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -74,6 +80,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     boolean keyboardShowing;
 
     private boolean doubleBackToExitPressedOnce = false;
+    private final static int WRITE_EXTERNAL_STORAGE = 1;
 
     @ProvidePresenter
     public PhotoEditorPresenter providePresenter() {
@@ -110,14 +117,11 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
         imagePicker.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false
         ));
-        imagePicker.addItemDecoration(new RecyclerViewUtils.ItemHorizontalOffsetDecoration(
-                AndroidUtilities.dp(this, 4)
-        ));
 
         imagePicker.setAdapter(imagePickerAdapter = new ImagePickerAdapter());
         imagePickerAdapter.setOnImageSelectedListener(uri -> {
             editorView.setBackgroundImage(uri);
-            imagePickerAdapter.setSelectedPosition(-1);
+            additionalImagePickerAdapter.setSelectedPosition(-1);
         });
 
         sizeNotifier.setKeyboardSizeListener(keyboardHeight -> {
@@ -158,6 +162,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
         additionalImagePickerAdapter.setOnImageSelectedListener(uri -> {
             editorView.setBackgroundImage(uri);
             imagePickerAdapter.setSelectedPosition(imagePickerAdapter.getItemCount() - 1);
+
         });
 
         additionalImagePickerAdapter.setOnPickImageListener(ignore -> {
@@ -180,7 +185,9 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 }
 
                 if (photoFile != null) {
-                    Uri photoURI = Uri.fromFile(photoFile);
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.samorodov.ru.interviewvk.fileprovider",
+                            photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
@@ -188,8 +195,35 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
 
         });
 
+        save.setOnClickListener(v -> {
+            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        WRITE_EXTERNAL_STORAGE
+                );
+            } else {
+                presenter.saveImageAndAddToGallery(editorView);
+            }
 
+        });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    presenter.saveImageAndAddToGallery(editorView);
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void updateKeyboardState() {
@@ -227,6 +261,11 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     public void addBackgroundImageToPicker(Uri image) {
         editorView.setBackgroundImage(image);
         additionalImagePickerAdapter.addImage(image);
+    }
+
+    @Override
+    public void imageSavedSuccess(String uri) {
+        Toast.makeText(this, "сохранено", Toast.LENGTH_SHORT).show();
     }
 
     @Override

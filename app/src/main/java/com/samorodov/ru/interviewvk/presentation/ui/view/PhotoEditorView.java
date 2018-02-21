@@ -2,18 +2,19 @@ package com.samorodov.ru.interviewvk.presentation.ui.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.EditText;
@@ -29,6 +30,11 @@ import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersGestur
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+
+import static android.text.TextUtils.isEmpty;
+import static com.samorodov.ru.interviewvk.utilits.image.ImageUtils.createBackgroundDrawable;
 
 /**
  * Created by xaxtix on 09.02.2018.
@@ -49,12 +55,14 @@ public class PhotoEditorView extends FrameLayout {
     Canvas stickersLayerCanvas;
 
     @Nullable
-    BitmapDrawable background;
+    Drawable background;
 
     @Nullable
     StickerDrawable capturedSticker;
 
     EditTextStyleDelegate editTextStyleDelegate;
+
+    EditText editText;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -91,7 +99,7 @@ public class PhotoEditorView extends FrameLayout {
         emptyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         emptyPaint.setFilterBitmap(true);
 
-        EditText editText = new EditText(getContext());
+        editText = new EditText(getContext());
         editText.setBackground(null);
         editText.setTextSize(24);
         editText.setHint(R.string.what_new);
@@ -172,6 +180,7 @@ public class PhotoEditorView extends FrameLayout {
 
     }
 
+
     public void setBackgroundImage(@Nullable Uri backgroundImage) {
         background = null;
 
@@ -183,16 +192,16 @@ public class PhotoEditorView extends FrameLayout {
         Glide.with(this)
                 .asBitmap()
                 .load(backgroundImage)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(new ViewTarget<PhotoEditorView, Bitmap>(this) {
 
                     @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        background = new BitmapDrawable(getResources(), resource);
-                        updateBackgroundSize();
-                        invalidate();
+                    public void onResourceReady(@NonNull Bitmap resource,
+                                                @Nullable Transition<? super Bitmap> transition) {
+                        createBackgroundDrawable(PhotoEditorView.this, getMeasuredWidth(), resource);
                     }
                 });
     }
+
 
     private void updateBackgroundSize() {
         if (background == null) return;
@@ -213,4 +222,34 @@ public class PhotoEditorView extends FrameLayout {
     }
 
 
+    public void setBack(Drawable back) {
+        this.background = back;
+        updateBackgroundSize();
+        invalidate();
+    }
+
+    public Bitmap prepareBitmap() {
+        Bitmap bitmap;
+        Canvas canvas;
+        if (background == null) {
+            bitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+            canvas = new Canvas(bitmap);
+            canvas.drawColor(Color.WHITE);
+        } else {
+            Rect bounds = background.getBounds();
+            bitmap = Bitmap.createBitmap(bounds.width(), bounds.height(), Bitmap.Config.ARGB_8888);
+            canvas = new Canvas(bitmap);
+            canvas.translate(0, -(getMeasuredHeight() - bounds.height() >> 1));
+        }
+
+        editText.clearFocus();
+        editText.setCursorVisible(false);
+        if (isEmpty(editText.getText()))
+            editText.setVisibility(GONE);
+        draw(canvas);
+
+        editText.setCursorVisible(true);
+        editText.setVisibility(VISIBLE);
+        return bitmap;
+    }
 }

@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import dagger.Lazy;
 
+import static android.text.TextUtils.isEmpty;
+
 @InjectViewState
 public class PhotoEditorPresenter extends BasePresenter<PhotoEditorView> {
 
@@ -28,5 +30,15 @@ public class PhotoEditorPresenter extends BasePresenter<PhotoEditorView> {
 
     public void addBackgroundImage(Uri image) {
         getViewState().addBackgroundImageToPicker(image);
+    }
+
+    public void saveImageAndAddToGallery(com.samorodov.ru.interviewvk.presentation.ui.view.PhotoEditorView
+                                                 editorView) {
+        subscriptions.add(
+                interactor.get().saveAndAddToGallery(editorView)
+                        .subscribe(uri -> {
+                            if(!isEmpty(uri)) getViewState().imageSavedSuccess(uri);
+                        },Throwable::printStackTrace)
+        );
     }
 }

@@ -1,13 +1,21 @@
 package com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker;
 
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerBaseItem;
 import com.samorodov.ru.interviewvk.presentation.ui.view.SelectableImageView;
+import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by xaxtix on 19.02.2018.
@@ -33,8 +41,7 @@ public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseIm
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        SelectableImageView imageView = new SelectableImageView(parent.getContext());
-        return new ViewHolder(imageView);
+        return new ViewHolder(AndroidUtilities.inflate(parent, getItemLayout()));
     }
 
     @Override
@@ -44,7 +51,7 @@ public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseIm
         if (selectedPosition == position) holder.imageView.setSelected(true);
         else holder.imageView.setSelected(false);
 
-        holder.imageView.setOnClickListener(v -> onItemClick(item, holder, position));
+        holder.itemView.setOnClickListener(v -> onItemClick(item, holder,position));
     }
 
     @Override
@@ -52,13 +59,19 @@ public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseIm
         return itemList.size();
     }
 
+    @LayoutRes
+    public int getItemLayout() {
+        return R.layout.item_image_picker;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.image_view)
         SelectableImageView imageView;
 
-        public ViewHolder(SelectableImageView itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            this.imageView = itemView;
+            ButterKnife.bind(this, itemView);
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         }
     }
