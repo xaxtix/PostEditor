@@ -2,7 +2,6 @@ package com.samorodov.ru.interviewvk.presentation.ui.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -12,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -27,12 +28,12 @@ import com.bumptech.glide.request.transition.Transition;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickerDrawable;
 import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersGestureDetector;
+import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-
+import static android.animation.AnimatorInflater.loadStateListAnimator;
 import static android.text.TextUtils.isEmpty;
 import static com.samorodov.ru.interviewvk.utilits.image.ImageUtils.createBackgroundDrawable;
 
@@ -64,31 +65,33 @@ public class PhotoEditorView extends FrameLayout {
 
     EditText editText;
 
+    ImageView trashIcon;
+
     public PhotoEditorView(Context context) {
         super(context);
-        init(null);
+        init();
     }
 
     public PhotoEditorView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
+        init();
     }
 
     public PhotoEditorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
+        init();
     }
 
-    private void init(AttributeSet attrs) {
+    private void init() {
         setWillNotDraw(false);
         gestureDetector = new StickersGestureDetector(this, stickers);
-        gestureDetector.setOnDrawaleCapturedListener(drawable -> {
+        gestureDetector.setOnCapturedListener(drawable -> {
             stickers.remove(drawable);
             capturedSticker = drawable;
             drawStickers();
             invalidate();
         });
-        gestureDetector.setOnDrawaleReleasedListener(drawable -> {
+        gestureDetector.setOnReleasedListener(drawable -> {
             stickers.add(drawable);
             capturedSticker = null;
             drawStickers();
@@ -114,6 +117,28 @@ public class PhotoEditorView extends FrameLayout {
         lp.gravity = Gravity.CENTER;
         lp.height = LayoutParams.WRAP_CONTENT;
         lp.width = LayoutParams.WRAP_CONTENT;
+
+        trashIcon = new ImageView(getContext());
+        trashIcon.setImageResource(R.drawable.ic_fab_trash);
+        addView(trashIcon);
+        lp = (LayoutParams) trashIcon.getLayoutParams();
+        lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+        int dp_56 = AndroidUtilities.dp(getContext(), 56);
+        lp.height = dp_56;
+        lp.width = dp_56;
+        lp.bottomMargin = dp_56 + (dp_56 >> 2);
+
+        trashIcon.setBackgroundResource(R.drawable.trash_background);
+        trashIcon.setOnClickListener(v -> {
+
+        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            trashIcon.setElevation(AndroidUtilities.dp(getContext(), 2));
+
+            trashIcon.setStateListAnimator(
+                    loadStateListAnimator(getContext(), R.animator.lift_on_touch_scale)
+            );
+        }
     }
 
     @Override

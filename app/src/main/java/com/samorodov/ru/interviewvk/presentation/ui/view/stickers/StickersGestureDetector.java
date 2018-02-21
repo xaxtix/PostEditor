@@ -152,11 +152,11 @@ public class StickersGestureDetector {
         return null;
     }
 
-    public void setOnDrawaleCapturedListener(@Nullable Consumer<StickerDrawable> onDrawaleCapturedListener) {
+    public void setOnCapturedListener(@Nullable Consumer<StickerDrawable> onDrawaleCapturedListener) {
         this.onDrawaleCapturedListener = onDrawaleCapturedListener;
     }
 
-    public void setOnDrawaleReleasedListener(@Nullable Consumer<StickerDrawable> onDrawaleReleasedListener) {
+    public void setOnReleasedListener(@Nullable Consumer<StickerDrawable> onDrawaleReleasedListener) {
         this.onDrawaleReleasedListener = onDrawaleReleasedListener;
     }
 }
