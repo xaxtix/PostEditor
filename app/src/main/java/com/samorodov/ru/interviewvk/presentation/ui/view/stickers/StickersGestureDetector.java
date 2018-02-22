@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.almeros.android.multitouch.MoveGestureDetector;
 import com.almeros.android.multitouch.RotateGestureDetector;
@@ -37,10 +38,11 @@ public class StickersGestureDetector {
     private float rotation;
 
     @Nullable
-    Consumer<StickerDrawable> onDrawaleCapturedListener;
+    Consumer<StickerDrawable> onDrawableCapturedListener;
 
     @Nullable
-    Consumer<StickerDrawable> onDrawaleReleasedListener;
+    Consumer<StickerDrawable> onDrawableReleasedListener;
+    private ImageView trashIcon;
 
     public StickersGestureDetector(View view, List<StickerDrawable> stickers) {
         this.view = view;
@@ -108,30 +110,37 @@ public class StickersGestureDetector {
                     if (event.getPointerCount() > 1) {
                         x = (event.getX(0) + event.getX(1)) / 2;
                         y = (event.getY(0) + event.getY(1)) / 2;
-
                     }
                     capturedSticker = findCapturedSticker(x, y);
 
                     if (capturedSticker != null) {
+                        trashIcon.setVisibility(View.VISIBLE);
                         translationX = capturedSticker.translationX;
                         translationY = capturedSticker.translationY;
                         rotation = capturedSticker.rotate;
                         scale = capturedSticker.scale;
-                        if (onDrawaleCapturedListener != null) {
-                            onDrawaleCapturedListener.accept(capturedSticker);
+                        if (onDrawableCapturedListener != null) {
+                            onDrawableCapturedListener.accept(capturedSticker);
                         }
                     }
                 }
                 return capturedSticker != null || event.getPointerCount() == 1;
             case ACTION_MOVE:
                 if (capturedSticker == null) return false;
+                trashIcon.setSelected(event.getPointerCount() == 1 && captureTrash(x, y));
                 view.invalidate();
                 return true;
             case ACTION_UP:
                 if (event.getPointerCount() == 1 && capturedSticker != null) {
-                    if (onDrawaleReleasedListener != null) {
-                        onDrawaleReleasedListener.accept(capturedSticker);
+                    if (captureTrash(x, y)) {
+                        trashIcon.setSelected(false);
+                        view.invalidate();
+                        capturedSticker = null;
                     }
+                    if (onDrawableReleasedListener != null) {
+                        onDrawableReleasedListener.accept(capturedSticker);
+                    }
+                    trashIcon.setVisibility(View.GONE);
                     capturedSticker = null;
                 }
                 return true;
@@ -139,6 +148,11 @@ public class StickersGestureDetector {
                 return capturedSticker != null;
         }
 
+    }
+
+    private boolean captureTrash(float x, float y) {
+        return y > trashIcon.getTop() && y < trashIcon.getBottom() &&
+                x > trashIcon.getLeft() && x < trashIcon.getRight();
     }
 
     @Nullable
@@ -153,10 +167,14 @@ public class StickersGestureDetector {
     }
 
     public void setOnCapturedListener(@Nullable Consumer<StickerDrawable> onDrawaleCapturedListener) {
-        this.onDrawaleCapturedListener = onDrawaleCapturedListener;
+        this.onDrawableCapturedListener = onDrawaleCapturedListener;
     }
 
     public void setOnReleasedListener(@Nullable Consumer<StickerDrawable> onDrawaleReleasedListener) {
-        this.onDrawaleReleasedListener = onDrawaleReleasedListener;
+        this.onDrawableReleasedListener = onDrawaleReleasedListener;
+    }
+
+    public void setTrashIcon(ImageView trashIcon) {
+        this.trashIcon = trashIcon;
     }
 }

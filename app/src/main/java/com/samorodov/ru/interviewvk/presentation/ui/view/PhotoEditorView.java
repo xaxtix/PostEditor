@@ -1,9 +1,7 @@
 package com.samorodov.ru.interviewvk.presentation.ui.view;
 
-import android.animation.StateListAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -16,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -37,6 +36,7 @@ import java.util.List;
 
 import static android.animation.AnimatorInflater.loadStateListAnimator;
 import static android.text.TextUtils.isEmpty;
+import static com.samorodov.ru.interviewvk.utilits.EditTextUtils.addRemoveHintTextWatcher;
 import static com.samorodov.ru.interviewvk.utilits.image.ImageUtils.createBackgroundDrawable;
 
 /**
@@ -94,7 +94,8 @@ public class PhotoEditorView extends FrameLayout {
             invalidate();
         });
         gestureDetector.setOnReleasedListener(drawable -> {
-            stickers.add(drawable);
+            if (drawable != null)
+                stickers.add(drawable);
             capturedSticker = null;
             drawStickers();
             invalidate();
@@ -108,6 +109,7 @@ public class PhotoEditorView extends FrameLayout {
         editText.setBackground(null);
         editText.setTextSize(24);
         editText.setHint(R.string.what_new);
+        addRemoveHintTextWatcher(editText, R.string.what_new);
         editText.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         editText.setGravity(Gravity.CENTER);
 
@@ -120,7 +122,15 @@ public class PhotoEditorView extends FrameLayout {
         lp.height = LayoutParams.WRAP_CONTENT;
         lp.width = LayoutParams.WRAP_CONTENT;
 
-        trashIcon = new ImageView(getContext());
+        trashIcon = new android.support.v7.widget.AppCompatImageView(getContext()) {
+            @Override
+            public void setSelected(boolean selected) {
+                super.setSelected(selected);
+                trashIcon.setImageResource(selected ?
+                        R.drawable.ic_fab_trash_released : R.drawable.ic_fab_trash
+                );
+            }
+        };
         trashIcon.setImageResource(R.drawable.ic_fab_trash);
         addView(trashIcon);
         lp = (LayoutParams) trashIcon.getLayoutParams();
@@ -131,9 +141,10 @@ public class PhotoEditorView extends FrameLayout {
         lp.bottomMargin = dp_56 + (dp_56 >> 2);
 
         trashIcon.setBackgroundResource(R.drawable.trash_background);
-        trashIcon.setOnClickListener(v -> {
+        trashIcon.setVisibility(GONE);
 
-        });
+        gestureDetector.setTrashIcon(trashIcon);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             trashIcon.setElevation(AndroidUtilities.dp(getContext(), 2));
 
@@ -160,6 +171,7 @@ public class PhotoEditorView extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.save();
         if (background != null) {
             canvas.clipRect(background.getBounds());
             background.draw(canvas);
@@ -167,6 +179,7 @@ public class PhotoEditorView extends FrameLayout {
         if (stickersLayer != null && stickers.size() > 0)
             canvas.drawBitmap(stickersLayer, 0, 0, emptyPaint);
         if (capturedSticker != null) capturedSticker.draw(canvas);
+        canvas.restore();
         super.onDraw(canvas);
     }
 
@@ -266,14 +279,10 @@ public class PhotoEditorView extends FrameLayout {
 
         editText.setInputType(textType | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-
         draw(state.canvas);
-        editText.draw(state.canvas);
 
-        editText.post(() -> {
-            editText.setCursorVisible(true);
-            editText.setVisibility(VISIBLE);
-        });
+        editText.setCursorVisible(true);
+        editText.setVisibility(VISIBLE);
 
         editText.setInputType(textType);
 

@@ -258,11 +258,6 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     }
 
     @Override
-    public void setBackgroundImagesToPicker(List<Uri> images) {
-
-    }
-
-    @Override
     public void addBackgroundImageToPicker(Uri image) {
         editorView.setBackgroundImage(image);
         additionalImagePickerAdapter.addImage(image);
