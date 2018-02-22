@@ -42,17 +42,20 @@ public class PhotoEditorInteractor extends BaseInteractor {
 
     public Observable<String> saveAndAddToGallery(PhotoEditorView editorView) {
         return Observable.just(editorView)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(view -> editorView.preDrawIntoBitmap())
                 .observeOn(Schedulers.computation())
-                .map(view -> {
-                    Bitmap bitmap = editorView.prepareBitmap();
+                .map(PhotoEditorView::createDrawingState)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(PhotoEditorView.DrawingState::prepareBitmap)
+                .observeOn(Schedulers.computation())
+                .map(bitmap -> {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss", Locale.ENGLISH);
-                    return MediaStore.Images.Media.insertImage(
+                    String uri = MediaStore.Images.Media.insertImage(
                             editorView.getContext().getContentResolver(),
                             bitmap,
-                            "interviewVK" + formatter.format(new Date()),
+                            "interviewVK_" + formatter.format(new Date()),
                             "Сделано с помощью interviewVK.\nС любовью \n<3 мур мур мур");
+                    bitmap.recycle();
+                    return uri;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io());

@@ -2,7 +2,6 @@ package com.samorodov.ru.interviewvk.presentation.ui.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -14,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -30,8 +30,6 @@ import com.samorodov.ru.interviewvk.presentation.ui.view.stickers.StickersGestur
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
 import static com.samorodov.ru.interviewvk.utilits.image.ImageUtils.createBackgroundDrawable;
@@ -228,9 +226,35 @@ public class PhotoEditorView extends FrameLayout {
         invalidate();
     }
 
-    public Bitmap prepareBitmap() {
+    public Bitmap prepareBitmap(DrawingState state) {
+
+        editText.clearFocus();
+        editText.setCursorVisible(false);
+        if (isEmpty(editText.getText()))
+            editText.setVisibility(GONE);
+        int textType = editText.getInputType();
+
+        editText.setInputType(textType | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+
+        draw(state.canvas);
+        editText.draw(state.canvas);
+
+        editText.post(() -> {
+            editText.setCursorVisible(true);
+            editText.setVisibility(VISIBLE);
+        });
+
+        editText.setInputType(textType);
+
+        return state.bitmap;
+    }
+
+
+    public DrawingState createDrawingState() {
         Bitmap bitmap;
         Canvas canvas;
+
         if (background == null) {
             bitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
             canvas = new Canvas(bitmap);
@@ -242,21 +266,23 @@ public class PhotoEditorView extends FrameLayout {
             canvas.translate(0, -(getMeasuredHeight() - bounds.height() >> 1));
         }
 
-
-        draw(canvas);
-
-        editText.post(() -> {
-            editText.setCursorVisible(true);
-            editText.setVisibility(VISIBLE);
-        });
-
-        return bitmap;
+        return new DrawingState(bitmap, canvas, this);
     }
 
-    public void preDrawIntoBitmap() {
-        editText.clearFocus();
-        editText.setCursorVisible(false);
-        if (isEmpty(editText.getText()))
-            editText.setVisibility(GONE);
+    public static class DrawingState {
+        final Bitmap bitmap;
+        final Canvas canvas;
+        final PhotoEditorView editorView;
+
+        public DrawingState(Bitmap bitmap, Canvas canvas, PhotoEditorView editorView) {
+
+            this.bitmap = bitmap;
+            this.canvas = canvas;
+            this.editorView = editorView;
+        }
+
+        public Bitmap prepareBitmap() {
+            return editorView.prepareBitmap(this);
+        }
     }
 }
