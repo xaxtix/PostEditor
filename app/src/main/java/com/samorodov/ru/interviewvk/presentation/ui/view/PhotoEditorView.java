@@ -1,7 +1,9 @@
 package com.samorodov.ru.interviewvk.presentation.ui.view;
 
+import android.animation.StateListAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -141,6 +143,7 @@ public class PhotoEditorView extends FrameLayout {
         }
     }
 
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -253,9 +256,35 @@ public class PhotoEditorView extends FrameLayout {
         invalidate();
     }
 
-    public Bitmap prepareBitmap() {
+    public Bitmap prepareBitmap(DrawingState state) {
+
+        editText.clearFocus();
+        editText.setCursorVisible(false);
+        if (isEmpty(editText.getText()))
+            editText.setVisibility(GONE);
+        int textType = editText.getInputType();
+
+        editText.setInputType(textType | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+
+        draw(state.canvas);
+        editText.draw(state.canvas);
+
+        editText.post(() -> {
+            editText.setCursorVisible(true);
+            editText.setVisibility(VISIBLE);
+        });
+
+        editText.setInputType(textType);
+
+        return state.bitmap;
+    }
+
+
+    public DrawingState createDrawingState() {
         Bitmap bitmap;
         Canvas canvas;
+
         if (background == null) {
             bitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
             canvas = new Canvas(bitmap);
@@ -267,21 +296,23 @@ public class PhotoEditorView extends FrameLayout {
             canvas.translate(0, -(getMeasuredHeight() - bounds.height() >> 1));
         }
 
-
-        draw(canvas);
-
-        editText.post(() -> {
-            editText.setCursorVisible(true);
-            editText.setVisibility(VISIBLE);
-        });
-
-        return bitmap;
+        return new DrawingState(bitmap, canvas, this);
     }
 
-    public void preDrawIntoBitmap() {
-        editText.clearFocus();
-        editText.setCursorVisible(false);
-        if (isEmpty(editText.getText()))
-            editText.setVisibility(GONE);
+    public static class DrawingState {
+        final Bitmap bitmap;
+        final Canvas canvas;
+        final PhotoEditorView editorView;
+
+        public DrawingState(Bitmap bitmap, Canvas canvas, PhotoEditorView editorView) {
+
+            this.bitmap = bitmap;
+            this.canvas = canvas;
+            this.editorView = editorView;
+        }
+
+        public Bitmap prepareBitmap() {
+            return editorView.prepareBitmap(this);
+        }
     }
 }

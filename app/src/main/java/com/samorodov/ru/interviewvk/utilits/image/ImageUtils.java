@@ -1,20 +1,11 @@
 package com.samorodov.ru.interviewvk.utilits.image;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.provider.MediaStore;
 
 import com.samorodov.ru.interviewvk.presentation.ui.view.PhotoEditorView;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 public class ImageUtils {
