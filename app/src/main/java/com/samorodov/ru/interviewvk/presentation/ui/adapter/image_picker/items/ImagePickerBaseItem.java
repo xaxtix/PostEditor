@@ -20,7 +20,7 @@ public abstract class ImagePickerBaseItem {
         onClick.accept(view);
     }
 
-    protected ImagePickerBaseItem(Consumer<View> onClick) {
+    ImagePickerBaseItem(Consumer<View> onClick) {
         this.onClick = onClick;
     }
 

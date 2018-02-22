@@ -124,6 +124,11 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
             additionalImagePickerAdapter.setSelectedPosition(-1);
         });
 
+        imagePickerAdapter.setOnGradientSelectedListener(gradient -> {
+            editorView.setBack(gradient);
+            additionalImagePickerAdapter.setSelectedPosition(-1);
+        });
+
         sizeNotifier.setKeyboardSizeListener(keyboardHeight -> {
             keyboardShowing = keyboardHeight > 0;
             if (keyboardShowing && this.keyboardHeight != keyboardHeight) {
