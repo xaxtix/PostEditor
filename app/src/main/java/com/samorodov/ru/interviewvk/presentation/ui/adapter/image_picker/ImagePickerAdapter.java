@@ -109,9 +109,6 @@ public class ImagePickerAdapter extends BaseImagePickerAdapter {
         int lastPosition = getItemCount() - 1;
         if (position != lastPosition)
             setSelectedPosition(position);
-
-        if (position != getItemCount() - 1 && onAdditionalListener != null)
-            onAdditionalListener.accept(false);
     }
 
     public void setOnImageSelectedListener(@Nullable Consumer<Uri> onImageSelectedListener) {

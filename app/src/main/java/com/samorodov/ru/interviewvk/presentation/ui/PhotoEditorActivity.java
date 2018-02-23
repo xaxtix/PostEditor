@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -190,9 +191,15 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 }
 
                 if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.samorodov.ru.interviewvk.fileprovider",
-                            photoFile);
+                    Uri photoURI;
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                        photoURI = Uri.fromFile(photoFile);
+                    } else {
+                        photoURI = FileProvider.getUriForFile(this,
+                                "com.samorodov.ru.interviewvk.fileprovider",
+                                photoFile);
+                    }
+
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
@@ -261,6 +268,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     public void addBackgroundImageToPicker(Uri image) {
         editorView.setBackgroundImage(image);
         additionalImagePickerAdapter.addImage(image);
+        imagePickerAdapter.setSelectedPosition(imagePickerAdapter.getItemCount() - 1);
     }
 
     @Override
