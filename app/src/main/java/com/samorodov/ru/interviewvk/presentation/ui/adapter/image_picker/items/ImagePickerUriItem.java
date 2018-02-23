@@ -37,4 +37,8 @@ public class ImagePickerUriItem extends ImagePickerBaseItem {
 
         imageView.clearFillColor();
     }
+
+    public boolean contains(Uri image) {
+        return fileUri.equals(image);
+    }
 }

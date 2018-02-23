@@ -1,5 +1,6 @@
 package com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items;
 
+import android.net.Uri;
 import android.view.View;
 
 import com.annimon.stream.function.Consumer;
@@ -22,5 +23,6 @@ public abstract class ImagePickerBaseItem {
     }
 
     public abstract void bindImage(SelectableImageView imageView);
+
 
 }

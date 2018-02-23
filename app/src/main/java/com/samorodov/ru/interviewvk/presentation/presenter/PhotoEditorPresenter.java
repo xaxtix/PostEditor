@@ -36,6 +36,7 @@ public class PhotoEditorPresenter extends BasePresenter<PhotoEditorView> {
                                                  editorView) {
         subscriptions.add(
                 interactor.get().saveAndAddToGallery(editorView)
+                        .compose(syncWaitState())
                         .subscribe(uri -> {
                             if (!isEmpty(uri)) getViewState().imageSavedSuccess(uri);
                         }, Throwable::printStackTrace)

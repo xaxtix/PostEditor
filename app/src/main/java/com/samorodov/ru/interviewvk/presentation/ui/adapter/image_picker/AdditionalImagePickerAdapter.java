@@ -62,6 +62,13 @@ public class AdditionalImagePickerAdapter extends BaseImagePickerAdapter {
     }
 
     public void addImage(Uri image) {
+        for(int i = 2; i < getItemCount(); i++){
+            if(((ImagePickerUriItem)itemList.get(i)).contains(image)){
+                setSelectedPosition(i);
+                notifyItemRangeChanged(2, getItemCount() - 1);
+                return;
+            }
+        }
         getItemList().add(2, new ImagePickerUriItem(0, image, uriConsumer));
         setSelectedPosition(2);
         notifyItemInserted(2);

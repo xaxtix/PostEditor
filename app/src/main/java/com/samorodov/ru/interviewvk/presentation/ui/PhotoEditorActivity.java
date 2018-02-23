@@ -277,6 +277,11 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
     }
 
     @Override
+    public void enableView(boolean enable) {
+        save.setEnabled(enable);
+    }
+
+    @Override
     public void onBackPressed() {
         if (stickersPopup != null && stickersPopup.isExpanded()) {
             stickersPopup.toggle();

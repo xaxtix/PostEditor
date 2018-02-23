@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseImagePickerAdapter.ViewHolder> {
 
 
-    private final List<ImagePickerBaseItem> itemList;
+    protected final List<ImagePickerBaseItem> itemList;
 
     public BaseImagePickerAdapter() {
         this.itemList = createItemList();
