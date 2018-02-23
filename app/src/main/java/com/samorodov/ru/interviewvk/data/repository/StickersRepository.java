@@ -12,7 +12,7 @@ import io.reactivex.Observable;
 
 public class StickersRepository {
 
-    private List<Uri> stickers = null;
+    private volatile List<Uri> stickers = null;
 
     @Inject
     StickersRepository() {

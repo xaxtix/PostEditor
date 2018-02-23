@@ -24,7 +24,7 @@ public class StickerDrawable {
     float scale = 1f;
     float rotate = 0;
 
-    public StickerDrawable(Bitmap bitmap,Paint paint,Matrix tmpMatrix) {
+    public StickerDrawable(Bitmap bitmap, Paint paint, Matrix tmpMatrix) {
         this.bitmap = bitmap;
 
         width = bitmap.getWidth();

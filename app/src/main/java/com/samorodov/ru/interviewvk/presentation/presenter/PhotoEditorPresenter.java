@@ -37,8 +37,8 @@ public class PhotoEditorPresenter extends BasePresenter<PhotoEditorView> {
         subscriptions.add(
                 interactor.get().saveAndAddToGallery(editorView)
                         .subscribe(uri -> {
-                            if(!isEmpty(uri)) getViewState().imageSavedSuccess(uri);
-                        },Throwable::printStackTrace)
+                            if (!isEmpty(uri)) getViewState().imageSavedSuccess(uri);
+                        }, Throwable::printStackTrace)
         );
     }
 }

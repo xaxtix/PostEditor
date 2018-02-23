@@ -4,6 +4,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
-
-</com.samorodov.ru.interviewvk.presentation.ui.view.SquareImageView>
+    android:padding="8dp"/>

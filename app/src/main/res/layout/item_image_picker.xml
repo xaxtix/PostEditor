@@ -7,8 +7,5 @@
     <com.samorodov.ru.interviewvk.presentation.ui.view.SelectableImageView
         android:id="@+id/image_view"
         android:layout_width="32dp"
-        android:layout_height="32dp">
-
-    </com.samorodov.ru.interviewvk.presentation.ui.view.SelectableImageView>
-
+        android:layout_height="32dp"/>
 </FrameLayout>

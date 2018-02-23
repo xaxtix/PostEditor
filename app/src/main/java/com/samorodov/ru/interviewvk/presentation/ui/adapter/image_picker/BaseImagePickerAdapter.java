@@ -17,10 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by xaxtix on 19.02.2018.
- * ♪♫•*¨*•.¸¸❤¸¸.•*¨*•♫♪ﾟ+｡☆*゜+。.。:.*.ﾟ ﾟ¨ﾟﾟ･*:..｡o○☆ﾟ+｡
- */
+
 
 public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseImagePickerAdapter.ViewHolder> {
 

@@ -15,7 +15,7 @@ import com.samorodov.ru.interviewvk.utilits.AndroidUtilities;
 
 public class SizeNotifierFrameLayout extends FrameLayout {
 
-    private Rect rect = new Rect();
+    private final Rect rect = new Rect();
 
     private Consumer<Integer> keyboardSizeListener;
 

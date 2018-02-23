@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
-public class SquareImageView extends android.support.v7.widget.AppCompatImageView{
+public class SquareImageView extends android.support.v7.widget.AppCompatImageView {
 
     public SquareImageView(Context context) {
         super(context);
@@ -22,9 +22,9 @@ public class SquareImageView extends android.support.v7.widget.AppCompatImageVie
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int width = getMeasuredWidth() < getMeasuredHeight() ? getMeasuredWidth() : getMeasuredHeight();
+        int size = getMeasuredWidth() < getMeasuredHeight() ? getMeasuredWidth() : getMeasuredHeight();
 
-        setMeasuredDimension(width, width);
+        setMeasuredDimension(size, size);
     }
 
 

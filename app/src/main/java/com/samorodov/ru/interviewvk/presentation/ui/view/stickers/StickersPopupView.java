@@ -127,7 +127,7 @@ public class StickersPopupView extends FrameLayout {
         this.stickerListener = stickerListener;
     }
 
-    public void setStickers(List<Uri> stickers){
+    public void setStickers(List<Uri> stickers) {
         adapter.setStickers(stickers);
     }
 
