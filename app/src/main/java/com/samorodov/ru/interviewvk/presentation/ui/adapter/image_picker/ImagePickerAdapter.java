@@ -1,29 +1,22 @@
 package com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker;
 
-import android.graphics.Color;
+import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.annimon.stream.function.Consumer;
-import com.bumptech.glide.Glide;
 import com.samorodov.ru.interviewvk.R;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerBaseItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerEmptyItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerGradientItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerUriItem;
 import com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker.items.ImagePickerAdditionalItem;
-import com.samorodov.ru.interviewvk.presentation.ui.view.SelectableImageView;
-import com.samorodov.ru.interviewvk.utilits.image.GradientDrawableFactory;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.support.v4.content.ContextCompat.getColor;
 
 /**
  * Created by xaxtix on 13.02.2018.
@@ -32,12 +25,17 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class ImagePickerAdapter extends BaseImagePickerAdapter {
 
+    private final Context context;
+
     @Nullable
     private Consumer<Uri> onImageSelectedListener;
 
     private Consumer<Boolean> onAdditionalListener;
     private Consumer<GradientDrawable> onGradientSelectedListener;
 
+    public ImagePickerAdapter(Context context) {
+        this.context = context;
+    }
 
     @Override
     protected List<ImagePickerBaseItem> createItemList() {
@@ -59,28 +57,28 @@ public class ImagePickerAdapter extends BaseImagePickerAdapter {
         }));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                Color.parseColor("#30F2D2"),
-                Color.parseColor("#2E7AE6")
+                getColor(context,R.color.blue_start),
+                getColor(context,R.color.blue_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                Color.parseColor("#CBE645"),
-                Color.parseColor("#47B347")
+                getColor(context,R.color.green_start),
+                getColor(context,R.color.green_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                Color.parseColor("#FFCC33"),
-                Color.parseColor("#FF7733")
+                getColor(context,R.color.orange_start),
+                getColor(context,R.color.orange_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                Color.parseColor("#FF3355"),
-                Color.parseColor("#990F6B")
+                getColor(context,R.color.red_start),
+                getColor(context,R.color.red_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                Color.parseColor("#F8A6FF"),
-                Color.parseColor("#6C6CD9")
+                getColor(context,R.color.purple_start),
+                getColor(context,R.color.purple_end)
         ));
 
 

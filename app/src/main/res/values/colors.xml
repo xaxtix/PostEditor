@@ -11,4 +11,16 @@
     <color name="white_30">#4cffffff</color>
     <color name="blue_20">#48528bcc</color>
     <color name="ligth_grey">#EBEBEB</color>
+
+    <!-- gradients -->
+    <color name="blue_start">#30F2D2</color>
+    <color name="blue_end">#2E7AE6</color>
+    <color name="green_start">#CBE645</color>
+    <color name="green_end">#47B347</color>
+    <color name="orange_start">#FFCC33</color>
+    <color name="orange_end">#FF7733</color>
+    <color name="red_start">#FF3355</color>
+    <color name="red_end">#990F6B</color>
+    <color name="purple_start">#F8A6FF</color>
+    <color name="purple_end">#6C6CD9</color>
 </resources>

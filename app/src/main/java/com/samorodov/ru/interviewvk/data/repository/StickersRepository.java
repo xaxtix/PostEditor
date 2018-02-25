@@ -26,7 +26,7 @@ public class StickersRepository {
                     localInstance = stickers;
                     if (localInstance == null) {
                         int size = 24;
-                        stickers = new ArrayList<>(24);
+                        stickers = new ArrayList<>(size);
                         for (int i = 0; i < size; i++) {
                             stickers.add(Uri.parse(String.format(
                                     Locale.UK, "file:///android_asset/stickers/%d.png",
