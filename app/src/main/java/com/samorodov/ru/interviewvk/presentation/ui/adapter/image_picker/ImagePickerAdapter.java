@@ -25,8 +25,6 @@ import static android.support.v4.content.ContextCompat.getColor;
 
 public class ImagePickerAdapter extends BaseImagePickerAdapter {
 
-    private final Context context;
-
     @Nullable
     private Consumer<Uri> onImageSelectedListener;
 
@@ -34,7 +32,7 @@ public class ImagePickerAdapter extends BaseImagePickerAdapter {
     private Consumer<GradientDrawable> onGradientSelectedListener;
 
     public ImagePickerAdapter(Context context) {
-        this.context = context;
+        super(context);
     }
 
     @Override
@@ -57,28 +55,28 @@ public class ImagePickerAdapter extends BaseImagePickerAdapter {
         }));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                getColor(context,R.color.blue_start),
-                getColor(context,R.color.blue_end)
+                getColor(context, R.color.blue_start),
+                getColor(context, R.color.blue_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                getColor(context,R.color.green_start),
-                getColor(context,R.color.green_end)
+                getColor(context, R.color.green_start),
+                getColor(context, R.color.green_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                getColor(context,R.color.orange_start),
-                getColor(context,R.color.orange_end)
+                getColor(context, R.color.orange_start),
+                getColor(context, R.color.orange_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                getColor(context,R.color.red_start),
-                getColor(context,R.color.red_end)
+                getColor(context, R.color.red_start),
+                getColor(context, R.color.red_end)
         ));
 
         itemList.add(new ImagePickerGradientItem(gradientConsumer,
-                getColor(context,R.color.purple_start),
-                getColor(context,R.color.purple_end)
+                getColor(context, R.color.purple_start),
+                getColor(context, R.color.purple_end)
         ));
 
 

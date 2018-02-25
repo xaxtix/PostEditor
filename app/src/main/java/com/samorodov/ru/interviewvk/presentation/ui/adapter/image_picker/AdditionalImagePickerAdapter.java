@@ -1,5 +1,6 @@
 package com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker;
 
+import android.content.Context;
 import android.net.Uri;
 
 import com.annimon.stream.function.Consumer;
@@ -19,6 +20,10 @@ public class AdditionalImagePickerAdapter extends BaseImagePickerAdapter {
     private Consumer onTakePhotoListener;
     private Consumer<Uri> onImageSelectedListener;
     private Consumer<Uri> uriConsumer = uri -> onImageSelectedListener.accept(uri);
+
+    public AdditionalImagePickerAdapter(Context context) {
+        super(context);
+    }
 
     @Override
     protected void onItemClick(ImagePickerBaseItem item, ViewHolder holder, int position) {

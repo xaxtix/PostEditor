@@ -158,7 +158,7 @@ public class PhotoEditorActivity extends MvpAppCompatActivity implements
                 false
         ));
 
-        additionalImagePickerAdapter = new AdditionalImagePickerAdapter();
+        additionalImagePickerAdapter = new AdditionalImagePickerAdapter(this);
         additionalRecycler.setAdapter(additionalImagePickerAdapter);
         additionalRecycler.addItemDecoration(new RecyclerViewUtils.ItemOffsetDecoration(
                 AndroidUtilities.dp(this, 4)

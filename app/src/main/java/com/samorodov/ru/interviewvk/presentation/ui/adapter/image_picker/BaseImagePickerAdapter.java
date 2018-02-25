@@ -1,5 +1,6 @@
 package com.samorodov.ru.interviewvk.presentation.ui.adapter.image_picker;
 
+import android.content.Context;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
@@ -21,10 +22,11 @@ import butterknife.ButterKnife;
 
 public abstract class BaseImagePickerAdapter extends RecyclerView.Adapter<BaseImagePickerAdapter.ViewHolder> {
 
-
+    protected final Context context;
     protected final List<ImagePickerBaseItem> itemList;
 
-    public BaseImagePickerAdapter() {
+    public BaseImagePickerAdapter(Context context) {
+        this.context = context;
         this.itemList = createItemList();
     }
 
